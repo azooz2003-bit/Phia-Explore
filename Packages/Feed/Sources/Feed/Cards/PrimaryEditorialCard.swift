@@ -18,22 +18,11 @@ struct PrimaryEditorialCard: View {
 
 #Preview {
     @Previewable @State var feedRepository: FeedRepository = RemoteFeedRepository()
-    @Previewable @State var focusedEditorial: FeedEditorial? = nil
+    let focusedEditorial: FeedEditorial = .primaryPreview
 
     VStack(alignment: .center) {
         Group {
-            if let focusedEditorial {
-                PrimaryEditorialCard(editorial: focusedEditorial)
-            } else {
-                ProgressView()
-            }
-        }
-        .task {
-            do {
-                focusedEditorial = try await feedRepository.fetchPublicExploreFeed(offset: 0, limit: 20).sections.first?.data.items.first(where: { $0.entityType == .editorial && $0.variant == .primary })?.editorial
-            } catch {
-                print(error)
-            }
+            PrimaryEditorialCard(editorial: focusedEditorial)
         }
     }
 }

@@ -6,6 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A3F7E4932F58D1AF00B99191 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = A3F7E4922F58D1AF00B99191 /* DesignSystem */; };
+		A3F7E4952F58D1B900B99191 /* Detail in Frameworks */ = {isa = PBXBuildFile; productRef = A3F7E4942F58D1B900B99191 /* Detail */; };
+		A3F7E4972F58D1BC00B99191 /* Feed in Frameworks */ = {isa = PBXBuildFile; productRef = A3F7E4962F58D1BC00B99191 /* Feed */; };
+		A3F7E4992F58D1BE00B99191 /* PhiaAPI in Frameworks */ = {isa = PBXBuildFile; productRef = A3F7E4982F58D1BE00B99191 /* PhiaAPI */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		4ECB8EFB2E5E062600F46296 /* PhiaOnsiteDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhiaOnsiteDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -44,6 +51,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3F7E4972F58D1BC00B99191 /* Feed in Frameworks */,
+				A3F7E4932F58D1AF00B99191 /* DesignSystem in Frameworks */,
+				A3F7E4952F58D1B900B99191 /* Detail in Frameworks */,
+				A3F7E4992F58D1BE00B99191 /* PhiaAPI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,6 +107,10 @@
 			);
 			name = PhiaOnsiteDemo;
 			packageProductDependencies = (
+				A3F7E4922F58D1AF00B99191 /* DesignSystem */,
+				A3F7E4942F58D1B900B99191 /* Detail */,
+				A3F7E4962F58D1BC00B99191 /* Feed */,
+				A3F7E4982F58D1BE00B99191 /* PhiaAPI */,
 			);
 			productName = PhiaOnsiteDemo;
 			productReference = 4ECB8EFB2E5E062600F46296 /* PhiaOnsiteDemo.app */;
@@ -355,6 +370,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A3F7E4922F58D1AF00B99191 /* DesignSystem */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DesignSystem;
+		};
+		A3F7E4942F58D1B900B99191 /* Detail */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Detail;
+		};
+		A3F7E4962F58D1BC00B99191 /* Feed */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Feed;
+		};
+		A3F7E4982F58D1BE00B99191 /* PhiaAPI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PhiaAPI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4ECB8EF32E5E062600F46296 /* Project object */;
 }

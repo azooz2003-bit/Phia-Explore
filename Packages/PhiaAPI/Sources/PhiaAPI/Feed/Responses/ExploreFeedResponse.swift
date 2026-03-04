@@ -97,8 +97,6 @@ public struct ExploreFeedResponse: Decodable, Sendable {
     public let offset: Int?
 }
 
-// MARK: - Public Type Aliases
-
 public typealias ExploreFeedSection = ExploreFeedResponse.ExploreFeedSection
 public typealias FeedSectionType = ExploreFeedResponse.ExploreFeedSection.SectionType
 public typealias FeedComponentType = ExploreFeedResponse.ExploreFeedSection.ComponentType
