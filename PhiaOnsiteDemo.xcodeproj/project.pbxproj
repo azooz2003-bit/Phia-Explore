@@ -10,10 +10,31 @@
 		4ECB8EFB2E5E062600F46296 /* PhiaOnsiteDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhiaOnsiteDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		A3F7E4852F57810C00B99191 /* Exceptions for "Packages" folder in "PhiaOnsiteDemo" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				DesignSystem,
+				Detail,
+				Feed,
+				PhiaAPI,
+			);
+			target = 4ECB8EFA2E5E062600F46296 /* PhiaOnsiteDemo */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		4ECB8EFD2E5E062600F46296 /* PhiaOnsiteDemo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = PhiaOnsiteDemo;
+			sourceTree = "<group>";
+		};
+		A3F7E47E2F57805700B99191 /* Packages */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A3F7E4852F57810C00B99191 /* Exceptions for "Packages" folder in "PhiaOnsiteDemo" target */,
+			);
+			path = Packages;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -32,7 +53,9 @@
 		4ECB8EF22E5E062600F46296 = {
 			isa = PBXGroup;
 			children = (
+				A3F7E47E2F57805700B99191 /* Packages */,
 				4ECB8EFD2E5E062600F46296 /* PhiaOnsiteDemo */,
+				A3F7E4812F57809000B99191 /* Frameworks */,
 				4ECB8EFC2E5E062600F46296 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -43,6 +66,13 @@
 				4ECB8EFB2E5E062600F46296 /* PhiaOnsiteDemo.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A3F7E4812F57809000B99191 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -62,6 +92,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				4ECB8EFD2E5E062600F46296 /* PhiaOnsiteDemo */,
+				A3F7E47E2F57805700B99191 /* Packages */,
 			);
 			name = PhiaOnsiteDemo;
 			packageProductDependencies = (
