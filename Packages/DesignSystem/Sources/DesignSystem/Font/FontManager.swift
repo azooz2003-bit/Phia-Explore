@@ -20,7 +20,7 @@ public enum FontManager {
         ]
 
         for font in fonts {
-            registerFont(bundle: .main, fontName: font.fontName, fontExtension: font.fontExtension)
+            registerFont(bundle: .module, fontName: font.fontName, fontExtension: font.fontExtension)
         }
     }
 
