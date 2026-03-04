@@ -21,6 +21,6 @@ let package = Package(
         .target(
             name: "PhiaAPI"
         ),
-
+        .testTarget(name: "PhiaAPITests", dependencies: ["PhiaAPI"])
     ]
 )

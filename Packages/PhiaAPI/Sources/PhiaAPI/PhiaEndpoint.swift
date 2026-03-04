@@ -7,32 +7,32 @@
 
 import Foundation
 
-public enum PhiaEndpoint {
-    case publicExploreFeed(offset: Int = 0, limit: Int = 20)
-    case authenticatedExploreFeed(offset: Int = 0, limit: Int = 20)
+public enum PhiaEndpoint: Sendable {
+    case getPublicExploreFeed(offset: Int = 0, limit: Int = 20)
+    case getAuthenticatedExploreFeed(offset: Int = 0, limit: Int = 20)
 
     /// e.g. /path/to/resource
     var path: String {
         switch self {
-        case .publicExploreFeed:
+        case .getPublicExploreFeed:
             "/explore/feed"
-        case .authenticatedExploreFeed:
-            "/api/v2/explore/feed"
+        case .getAuthenticatedExploreFeed:
+            "/v2/explore/feed"
         }
     }
 
     var method: HTTPMethod {
         switch self {
-        case .publicExploreFeed:
+        case .getPublicExploreFeed:
             .GET
-        case .authenticatedExploreFeed:
+        case .getAuthenticatedExploreFeed:
             .GET
         }
     }
 
     var queryParams: [URLQueryItem] {
         switch self {
-        case .publicExploreFeed(let offset, let limit), .authenticatedExploreFeed(let offset, let limit):
+        case .getPublicExploreFeed(let offset, let limit), .getAuthenticatedExploreFeed(let offset, let limit):
             [
                 URLQueryItem(name: "offset", value: "\(offset)"),
                 URLQueryItem(name: "limit", value: "\(limit)")
@@ -42,9 +42,9 @@ public enum PhiaEndpoint {
     
     var needsAuthentication: Bool {
         switch self {
-        case .publicExploreFeed:
+        case .getPublicExploreFeed:
             return false
-        case .authenticatedExploreFeed:
+        case .getAuthenticatedExploreFeed:
             return true
         }
     }

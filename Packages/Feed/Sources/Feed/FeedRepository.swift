@@ -18,11 +18,11 @@ actor RemoteFeedRepository: FeedRepository {
 
     /// - Throws: `PhiaAPIError` if the network request and decoding fails, ...
     func fetchPublicExploreFeed(offset: Int, limit: Int) async throws -> ExploreFeedResponse {
-        try await api.dispatchRequest(for: .publicExploreFeed(offset: offset, limit: limit)) as ExploreFeedResponse
+        try await api.dispatchRequest(for: .getPublicExploreFeed(offset: offset, limit: limit)) as ExploreFeedResponse
     }
 
     /// - Throws: `PhiaAPIError` if the network request and decoding fails, ...
     func fetchAuthenticatedExploreFeed(offset: Int, limit: Int) async throws -> ExploreFeedResponse {
-        try await api.dispatchRequest(for: .authenticatedExploreFeed(offset: offset, limit: limit)) as ExploreFeedResponse
+        try await api.dispatchRequest(for: .getAuthenticatedExploreFeed(offset: offset, limit: limit)) as ExploreFeedResponse
     }
 }

@@ -9,11 +9,15 @@ import Foundation
 
 public struct PhiaAPI: Sendable {
     /// User-friendly errors for PhiaAPI
-    public enum PhiaAPIError: LocalizedError {
-        case noHTTPResponseFound, requestFailed, clientError, serverError, failedToParseData
+    public enum PhiaAPIError: LocalizedError, Sendable {
+        case noHTTPResponseFound
+        case requestFailed(reason: String)
+        case clientError(statusCode: Int)
+        case serverError(statusCode: Int)
+        case failedToParseData
     }
 
-    static let baseURL = URL(string: "http://35.193.245.204")!
+    static let baseURL = URL(string: "http://35.193.245.204/api")!
 
     let authToken = "phia-interview-token"
     let decoder = {
@@ -33,12 +37,12 @@ public struct PhiaAPI: Sendable {
         var request = URLRequest(url: url)
         request.httpMethod = endpoint.method.rawValue
 
-        let headers: [String: String] = [
+        var headers: [String: String] = [
             "Accept" : "application/json"
         ]
 
         if endpoint.needsAuthentication {
-            request.allHTTPHeaderFields?["Authorization"] = "Bearer \(authToken)"
+            headers["Authorization"] = "Bearer \(authToken)"
         }
 
         request.allHTTPHeaderFields = headers
@@ -51,39 +55,40 @@ public struct PhiaAPI: Sendable {
     ) async throws(PhiaAPIError) -> T {
         let request = self.request(for: endpoint)
 
+        let (data, response): (Data, URLResponse)
         do {
-            let (data, response) = try await URLSession.shared.data(for: request)
-
-            guard let response = response as? HTTPURLResponse else {
-                throw PhiaAPIError.noHTTPResponseFound
-            }
-
-            let httpStatus = HTTPStatusCode(rawValue: response.statusCode)
-
-            guard httpStatus?.responseType == .success else {
-                guard let httpStatus else {
-                    throw PhiaAPIError.requestFailed
-                }
-
-                switch httpStatus.responseType {
-                case .clientError:
-                    throw PhiaAPIError.clientError
-                case .serverError:
-                    throw PhiaAPIError.serverError
-                default:
-                    throw PhiaAPIError.requestFailed
-                }
-            }
-
-            
-            guard let decoded = try? decoder.decode(T.self, from: data) else {
-                throw PhiaAPIError.failedToParseData
-            }
-
-            return decoded
+            (data, response) = try await URLSession.shared.data(for: request)
         } catch {
-            throw PhiaAPIError.requestFailed
+            throw PhiaAPIError.requestFailed(reason: error.localizedDescription)
         }
+
+        guard let response = response as? HTTPURLResponse else {
+            throw PhiaAPIError.noHTTPResponseFound
+        }
+
+        let httpStatus = HTTPStatusCode(rawValue: response.statusCode)
+
+        guard httpStatus?.responseType == .success else {
+            guard let httpStatus else {
+                throw PhiaAPIError.requestFailed(reason: "Request did not succeed, \(response.statusCode)")
+            }
+
+            switch httpStatus.responseType {
+            case .clientError:
+                throw PhiaAPIError.clientError(statusCode: response.statusCode)
+            case .serverError:
+                throw PhiaAPIError.serverError(statusCode: response.statusCode)
+            default:
+                throw PhiaAPIError.requestFailed(reason: "Request did not succeed, \(response.statusCode)")
+            }
+        }
+
+
+        guard let decoded = try? decoder.decode(T.self, from: data) else {
+            throw PhiaAPIError.failedToParseData
+        }
+
+        return decoded
     }
 }
 
