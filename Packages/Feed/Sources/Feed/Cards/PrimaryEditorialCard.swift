@@ -52,14 +52,13 @@ struct PrimaryEditorialCard: View {
             case .success(let image):
                 image
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
             case .failure(let error):
                 Text("Bad: \(error.localizedDescription)") // TODO: use sf symbol
             @unknown default:
                 fatalError()
             }
         }
-        .frame(maxWidth: .infinity)
+        .aspectRatio(contentMode: .fit)
         .clipShape(RoundedRectangle(cornerRadius: 6))
     }
 
@@ -86,13 +85,13 @@ struct PrimaryEditorialCard: View {
             case .success(let image):
                 image
                     .resizable()
-                    .aspectRatio(contentMode: .fill)
             case .failure(let error):
                 Text("Bad: \(error.localizedDescription)") // TODO: use sf symbol
             @unknown default:
                 fatalError()
             }
         }
+        .aspectRatio(contentMode: .fill)
         .frame(width: 123, height: 175)
         .clipShape(RoundedRectangle(cornerRadius: 6))
         .onTapGesture {
@@ -137,7 +136,6 @@ struct PrimaryEditorialCard: View {
                     case .success(let image):
                         image
                             .resizable()
-                            .aspectRatio(contentMode: .fill)
                     case .failure(let error):
                         Text("Bad: \(error.localizedDescription)") // TODO: use sf symbol
                     @unknown default:
@@ -147,8 +145,8 @@ struct PrimaryEditorialCard: View {
             } else {
                 EmptyView()
             }
-
         }
+        .aspectRatio(contentMode: .fill)
         .frame(width: 18, height: 18)
         .clipShape(Circle())
     }

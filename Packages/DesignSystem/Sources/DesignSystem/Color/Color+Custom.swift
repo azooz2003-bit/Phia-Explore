@@ -19,6 +19,7 @@ public extension Color {
         public static let tertiary = Color(.foregroundTertiary)
         public static let disabled = Color(.foregroundDisabled)
         public static let inverse = Color(.foregroundInverse)
+        public static let onColor = Color(.foregroundOn)
     }
 
     enum Background {
@@ -30,5 +31,6 @@ public extension Color {
     enum Overlay {
         public static let light950 = Color(.overlayLight950)
         public static let dark500 = Color(.overlayDark500)
+        public static let dark100 = Color(.overlayDark100)
     }
 }
