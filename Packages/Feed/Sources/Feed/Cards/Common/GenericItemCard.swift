@@ -1,5 +1,5 @@
 //
-//  PrimaryOutfitCard.swift
+//  PagedItemCard.swift
 //  Feed
 //
 //  Created by Abdulaziz Albahar on 3/4/26.
@@ -9,8 +9,11 @@ import SwiftUI
 import DesignSystem
 import PhiaAPI
 
-struct PrimaryOutfitCard: View {
-    let outfit: FeedOutfit
+struct GenericItemCard: View {
+    let title: String
+    let titleLineLimit: Int
+    let subtitle: String?
+    let imageUrls: [URL]?
 
     @State var currentPage: Int? = nil
 
@@ -26,8 +29,8 @@ struct PrimaryOutfitCard: View {
 
     @ViewBuilder
     var outfitContent: some View {
-        if let products = outfit.products {
-            catalogScrollView(for: products)
+        if let imageUrls, !imageUrls.isEmpty {
+            catalogScrollView(for: imageUrls)
                 .overlay(alignment: .topTrailing) {
                     // TODO: implement repository for bookmarked items
                     Button {
@@ -40,8 +43,8 @@ struct PrimaryOutfitCard: View {
                 .overlay(alignment: .bottom) {
                     // TODO: ellipsis
                     // TODO: get rid of paging ellipsis if count == 1
-                    if let products = outfit.products, products.count > 1 {
-                        PageIndicators(totalPages: products.count + 1, currentPage: currentPage ?? 0)
+                    if imageUrls.count > 1 {
+                        PageIndicators(totalPages: imageUrls.count, currentPage: currentPage ?? 0)
                             .padding(.bottom, 12)
                     }
                 }
@@ -52,16 +55,12 @@ struct PrimaryOutfitCard: View {
     }
 
     @ViewBuilder
-    func catalogScrollView(for products: [FeedProduct]) -> some View {
+    func catalogScrollView(for imageUrls: [URL]) -> some View {
             ScrollView(.horizontal) {
                 LazyHStack(spacing: 0) {
-                    imageView(for: outfit.imgUrl)
-                        .id(0)
-
-                    ForEach(products.enumerated().map(\.self), id: \.1.id) { (i, product) in
-                        imageView(for: product
-                            .imgUrl)
-                        .id(i + 1)
+                    ForEach(imageUrls.enumerated().map(\.self), id: \.0) { (i, imgUrl) in
+                        imageView(for: imgUrl)
+                        .id(i)
                     }
                 }
                 .fixedSize(horizontal: false, vertical: true)
@@ -70,6 +69,7 @@ struct PrimaryOutfitCard: View {
             .scrollTargetBehavior(.viewAligned)
             .scrollIndicators(.hidden)
             .scrollPosition(id: $currentPage)
+            .scrollDisabled(imageUrls.count == 1)
     }
 
     @ViewBuilder
@@ -94,10 +94,19 @@ struct PrimaryOutfitCard: View {
 
     @ViewBuilder
     var footer: some View {
-        HStack {
-            Text(outfit.name)
-                .customFont(.Label.medium)
-                .foregroundStyle(Color.Content.primary)
+        HStack(alignment: .top) {
+            VStack(alignment: .leading, spacing: 4) {
+                if let subtitle {
+                    Text(subtitle)
+                        .customFont(.CaptionMono.xSmall)
+                        .foregroundStyle(Color.Foreground.disabled)
+                        .lineLimit(1)
+                }
+                Text(title)
+                    .customFont(.Label.medium)
+                    .foregroundStyle(Color.Content.primary)
+                    .lineLimit(titleLineLimit)
+            }
 
             Spacer()
 
@@ -115,13 +124,34 @@ struct PrimaryOutfitCard: View {
     }
 }
 
-#Preview {
+#Preview("Outfit") {
     let focusedOutfit: FeedOutfit = .primaryPreview
+
+    var urls: [URL] {
+        [focusedOutfit.imgUrl].compactMap(\.self) + (focusedOutfit.products?.compactMap(\.imgUrl) ?? [])
+    }
 
     FontManager.registerFonts()
 
     return VStack(alignment: .center) {
-        PrimaryOutfitCard(outfit: focusedOutfit)
+        GenericItemCard(title: "focusedOutfit.name q wrqfegeqge", titleLineLimit: 1, subtitle: nil, imageUrls: urls)
+            .frame(width: 200)
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(Color.Background.tertiary)
+}
+
+#Preview("Product") {
+    let focusedOutfit: FeedOutfit = .primaryPreview
+
+    var urls: [URL] {
+        [focusedOutfit.imgUrl].compactMap(\.self) + (focusedOutfit.products?.compactMap(\.imgUrl) ?? [])
+    }
+
+    FontManager.registerFonts()
+
+    return VStack(alignment: .center) {
+        GenericItemCard(title: "focusedOutfit.name q wrqfegeqge", titleLineLimit: 2, subtitle: "RHODE • $30", imageUrls: [urls[0]])
             .frame(width: 200)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
