@@ -17,11 +17,22 @@ struct SecondaryOutfitCard: View {
     }
 }
 
-#Preview {
+#Preview("Workday Uniform") {
     FontManager.registerFonts()
 
     return VStack(alignment: .center) {
         SecondaryOutfitCard(outfit: .secondaryPreview)
+            .frame(width: 200)
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(Color.Background.tertiary)
+}
+
+#Preview("2 Products - Workday Uniform") {
+    FontManager.registerFonts()
+
+    return VStack(alignment: .center) {
+        SecondaryOutfitCard(outfit: .secondaryPreview2)
             .frame(width: 200)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)

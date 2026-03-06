@@ -41,6 +41,55 @@ extension FeedEditorial {
         ]
     )
 
+    public static let secondaryPreview2 = FeedEditorial(
+        id: "cmk31a6200001kt04jtr5seww",
+        collectionId: "collection-202601-690797",
+        title: "Your Nike Air Force's Big Brother",
+        description: "Elevated men's sneakers that add edge (or subtlety) to any outfit\n",
+        imgUrl: URL(string: "https://cdn.phia.com/editorial-manager/editorials/8d171f452657bf0d8e4d6a5ce1fd12e5a71d417b85eb446c85f089358aaab14c.jpg"),
+        author: FeedAuthor(
+            id: "author-0",
+            name: "Phia",
+            handle: "@phiaco",
+            imgUrl: URL(string: "https://cdn.phia.com/editorial-manager/authors/f389fd85b38f8caf621fd9281dcd40668025a38a5a287ab9d3255cda401adf56.jpg")
+        ),
+        brand: nil,
+        products: [
+            FeedProduct(
+                id: "ENTITY_TYPE_PRODUCT-ceee68dbd5802cba",
+                itemName: "Bogner Fanja Down Coat",
+                brand: "Bogner",
+                price: 1250.0,
+                productUrl: URL(string: "https://www.google.com/search?q=Bogner+fashion")!,
+                imgUrl: URL(string: "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQl9mcHxH5ks69jSTFfUX7Am1UtzWdPw8JMY5isjeeFT6Mnc21YpKpR-oIhn9rKz6h_voQHj84rtslZinwABXmOpe3DBrc3pxGrurFktbqDcidcDgmV1rw-")
+            ),
+            FeedProduct(
+                id: "ENTITY_TYPE_PRODUCT-e125cfa5a7afdd62",
+                itemName: "Nolita Large Faux Shoulder Bag",
+                brand: "Michael Kors",
+                price: 498.0,
+                productUrl: URL(string: "https://www.michaelkors.com/nolita-large-faux-shearling-shoulder-bag/30F5GY5H7F.html?astc=true&dwvar_30F5GY5H7F_color=0121")!,
+                imgUrl: URL(string: "https://cdn.phia.com/editorial-manager/products/dfe482bb86fc58869e928845bf2d2e66b9327a47515d151f108341d4a41326b7.jpg")
+            ),
+            FeedProduct(
+                id: "ENTITY_TYPE_PRODUCT-dc266af587de3ed7",
+                itemName: "Thais Jacket",
+                brand: "Sezane",
+                price: 235.0,
+                productUrl: URL(string: "https://www.sezane.com/us-en/product/thais-jacket/dark-taupe#size-XXS")!,
+                imgUrl: URL(string: "https://cdn.phia.com/editorial-manager/products/e69b56475e13d75f86b6e8fe4720e1936df717af375e987636e9e4c8cc3a42f1.png")
+            ),
+            FeedProduct(
+                id: "ENTITY_TYPE_PRODUCT-f733f107fe774d9c",
+                itemName: "Vegan Leather Laney Skirt",
+                brand: "Cinq à Sept",
+                price: 355.0,
+                productUrl: URL(string: "https://cinqasept.nyc/collections/new-arrivals/products/vegan-leather-laney-skirt-in-black-black")!,
+                imgUrl: URL(string: "https://cinqasept.nyc/cdn/shop/files/JAG6192_ZS4075872Z_veganleatherlaneyskirt_blackblack_OF_Front_1_1800x1800.jpg?v=1751560850")
+            )
+        ]
+    )
+
     public static let secondaryPreview = FeedEditorial(
         id: "cmkr1k50h0001js04vuk6mek6",
         collectionId: "collection-202601-319316",
@@ -120,6 +169,34 @@ extension FeedOutfit {
                 price: 75.0,
                 productUrl: URL(string: "https://www.adidas.com/us/adicolor-classic-firebird-loose-track-pants/JW1225.html")!,
                 imgUrl: URL(string: "https://assets.adidas.com/images/h_2000,f_auto,q_auto,fl_lossy,c_fill,g_auto/eb7c4377f63546648ed16182dbbb17cf_9366/Adicolor_Classic_Firebird_Loose_Track_Pants_Red_JW1225_21_model.jpg")
+            )
+        ]
+    )
+
+    public static let secondaryPreview2 = FeedOutfit(
+        id: "outfit-1761840234845-v2",
+        name: "Workday Uniform",
+        description: "An elevated office look.",
+        imgUrl: URL(string: "https://cdn.phia.com/editorial-manager/outfits/c7ebda974da662c5d9227bdd6d5d77a0ed63d04960402e2459fd80bcf473e608.jpg"),
+        imgUrls: nil,
+        author: nil,
+        brand: nil,
+        products: [
+            FeedProduct(
+                id: "ENTITY_TYPE_PRODUCT-ffa4164bee8b1476",
+                itemName: "Lisa Kitten Heel Bootie",
+                brand: "Veronica Beard",
+                price: 495.0,
+                productUrl: URL(string: "https://veronicabeard.com/products/lisa-kitten-heel-bootie-hazelwood")!,
+                imgUrl: URL(string: "https://cdn.phia.com/editorial-manager/products/8a8f95fbc01e756faa03939d54b02e07725d0f817f659d6560e9344b36c43908.jpg")
+            ),
+            FeedProduct(
+                id: "ENTITY_TYPE_PRODUCT-12fb0d7c2bebe716",
+                itemName: "Crewneck Favorite T-Shirt",
+                brand: "Tommy Hilfiger",
+                price: 21.9,
+                productUrl: URL(string: "https://usa.tommy.com/en/women/clothing/tops/crewneck-favorite-t-shirt/76J4869-YCI.html?journey=Tier_18482873")!,
+                imgUrl: URL(string: "https://cdn.phia.com/editorial-manager/products/820c6a307d7b2bc6ad570511d82b044f7f17bb6b679c5e13bba8c47f62dc684b.png")
             )
         ]
     )

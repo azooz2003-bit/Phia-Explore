@@ -15,9 +15,13 @@
 #### Outfit (Secondary) Card
 - The single outfit photo is just the outfit image with each payload.
 
+### Editorial (Secondary) Card
+- The 3 product images on the right side are equal height (dynamic based on primary editorial image) but fixed width.
+
 ## TODO
 - Image caching for all images
 - User defaults bookmark tracking
 - Improved error messaging in async images
 - Paging indicator complete logic
+- Handle nonexistent img url cases gracefully
 

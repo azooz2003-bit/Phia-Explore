@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A36D28392F5A60D400EB2F2B /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = A36D28382F5A60D400EB2F2B /* README.md */; };
 		A3F7E4932F58D1AF00B99191 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = A3F7E4922F58D1AF00B99191 /* DesignSystem */; };
 		A3F7E4952F58D1B900B99191 /* Detail in Frameworks */ = {isa = PBXBuildFile; productRef = A3F7E4942F58D1B900B99191 /* Detail */; };
 		A3F7E4972F58D1BC00B99191 /* Feed in Frameworks */ = {isa = PBXBuildFile; productRef = A3F7E4962F58D1BC00B99191 /* Feed */; };
@@ -15,6 +16,7 @@
 
 /* Begin PBXFileReference section */
 		4ECB8EFB2E5E062600F46296 /* PhiaOnsiteDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhiaOnsiteDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A36D28382F5A60D400EB2F2B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -68,6 +70,7 @@
 				4ECB8EFD2E5E062600F46296 /* PhiaOnsiteDemo */,
 				A3F7E4812F57809000B99191 /* Frameworks */,
 				4ECB8EFC2E5E062600F46296 /* Products */,
+				A36D28382F5A60D400EB2F2B /* README.md */,
 			);
 			sourceTree = "<group>";
 		};
@@ -155,6 +158,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A36D28392F5A60D400EB2F2B /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
