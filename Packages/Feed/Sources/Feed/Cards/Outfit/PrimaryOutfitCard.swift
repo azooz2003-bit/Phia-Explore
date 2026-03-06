@@ -11,6 +11,7 @@ import PhiaAPI
 
 struct PrimaryOutfitCard: View {
     static let estimatedHeight: CGFloat = 420
+    static let estimatedPrimaryImageHeight: CGFloat = 380
 
     let outfit: FeedOutfit
 
@@ -22,7 +23,7 @@ struct PrimaryOutfitCard: View {
     }
 
     var body: some View {
-        GenericItemCard(title: outfit.name, titleLineLimit: 1, subtitle: nil, imageUrls: imageUrls)
+        GenericItemCard(title: outfit.name, titleLineLimit: 1, subtitle: nil, imageUrls: imageUrls, estimatedPrimaryImageHeight: Self.estimatedPrimaryImageHeight)
     }
 }
 

@@ -9,13 +9,22 @@ import SwiftUI
 import DesignSystem
 import PhiaAPI
 
-struct GenericItemCard: View {
+struct GenericItemCard<Subtitle: View>: View {
     let title: String
     let titleLineLimit: Int
-    let subtitle: String?
+    let subtitle: Subtitle
     let imageUrls: [URL]?
+    let estimatedPrimaryImageHeight: CGFloat
 
     @State var currentPage: Int? = nil
+
+    init(title: String, titleLineLimit: Int, imageUrls: [URL]?, estimatedPrimaryImageHeight: CGFloat, @ViewBuilder subtitle: () -> Subtitle) {
+        self.title = title
+        self.titleLineLimit = titleLineLimit
+        self.imageUrls = imageUrls
+        self.estimatedPrimaryImageHeight = estimatedPrimaryImageHeight
+        self.subtitle = subtitle()
+    }
 
     var body: some View {
         VStack(spacing: 10) {
@@ -76,11 +85,13 @@ struct GenericItemCard: View {
             switch phase {
             case .empty:
                 ProgressView() // TODO: update
+                    .frame(height: estimatedPrimaryImageHeight)
             case .success(let image):
                 image
                     .resizable()
             case .failure(let error):
                 Text("Bad: \(error.localizedDescription)") // TODO: use sf symbol
+                    .frame(height: estimatedPrimaryImageHeight)
             @unknown default:
                 fatalError()
             }
@@ -94,12 +105,8 @@ struct GenericItemCard: View {
     var footer: some View {
         HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 4) {
-                if let subtitle {
-                    Text(subtitle)
-                        .customFont(.CaptionMono.xSmall)
-                        .foregroundStyle(Color.Foreground.disabled)
-                        .lineLimit(1)
-                }
+                subtitle
+
                 Text(title)
                     .customFont(.Label.medium)
                     .foregroundStyle(Color.Content.primary)
@@ -122,6 +129,25 @@ struct GenericItemCard: View {
     }
 }
 
+extension GenericItemCard where Subtitle == AnyView {
+    init(title: String, titleLineLimit: Int, subtitle: String?, imageUrls: [URL]?, estimatedPrimaryImageHeight: CGFloat) {
+        self.init(title: title, titleLineLimit: titleLineLimit, imageUrls: imageUrls, estimatedPrimaryImageHeight: estimatedPrimaryImageHeight) {
+            AnyView(
+                Group {
+                    if let subtitle {
+                        Text(subtitle)
+                            .customFont(.CaptionMono.xSmall)
+                            .foregroundStyle(Color.Foreground.disabled)
+                            .lineLimit(1)
+                    } else {
+                        EmptyView()
+                    }
+                }
+            )
+        }
+    }
+}
+
 #Preview("Outfit") {
     let focusedOutfit: FeedOutfit = .primaryPreview
 
@@ -132,7 +158,7 @@ struct GenericItemCard: View {
     FontManager.registerFonts()
 
     return VStack(alignment: .center) {
-        GenericItemCard(title: "focusedOutfit.name q wrqfegeqge", titleLineLimit: 1, subtitle: nil, imageUrls: urls)
+        GenericItemCard(title: "focusedOutfit.name q wrqfegeqge", titleLineLimit: 1, subtitle: nil, imageUrls: urls, estimatedPrimaryImageHeight: PrimaryOutfitCard.estimatedHeight)
             .frame(width: 200)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -149,7 +175,7 @@ struct GenericItemCard: View {
     FontManager.registerFonts()
 
     return VStack(alignment: .center) {
-        GenericItemCard(title: "focusedOutfit.name q wrqfegeqge", titleLineLimit: 2, subtitle: "RHODE • $30", imageUrls: [urls[0]])
+        GenericItemCard(title: "focusedOutfit.name q wrqfegeqge", titleLineLimit: 2, subtitle: "RHODE • $30", imageUrls: [urls[0]], estimatedPrimaryImageHeight: PrimaryOutfitCard.estimatedHeight)
             .frame(width: 200)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)

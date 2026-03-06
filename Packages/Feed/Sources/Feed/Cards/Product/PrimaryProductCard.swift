@@ -11,6 +11,7 @@ import PhiaAPI
 
 struct PrimaryProductCard: View {
     static let estimatedHeight: CGFloat = 352
+    static let estimatedPrimaryImageHeight: CGFloat = 270
 
     let product: FeedProduct
 
@@ -22,16 +23,25 @@ struct PrimaryProductCard: View {
         return formatter
     }()
 
-    /// Displays brand and price (not formatted since price amount is only provided in US dollars)
-    var subtitle: String {
-        let priceFormatted = formatter.string(for: product.price)
-        if let priceFormatted {
-            return "\(product.brand.uppercased()) • \(priceFormatted)"
-        } else { return product.brand }
+    var priceFormatted: String? {
+        formatter.string(for: product.price)
     }
 
     var body: some View {
-        GenericItemCard(title: product.itemName, titleLineLimit: 2, subtitle: subtitle, imageUrls: [product.imgUrl].compactMap(\.self))
+        GenericItemCard(title: product.itemName, titleLineLimit: 2, imageUrls: [product.imgUrl].compactMap(\.self), estimatedPrimaryImageHeight: Self.estimatedPrimaryImageHeight) {
+            HStack(spacing: 0) {
+                Text(product.brand.uppercased())
+                    .lineLimit(1)
+                    .layoutPriority(-1)
+
+                if let priceFormatted {
+                    Text(" • \(priceFormatted)")
+                        .layoutPriority(1)
+                }
+            }
+            .customFont(.CaptionMono.xSmall)
+            .foregroundStyle(Color.Foreground.disabled)
+        }
     }
 }
 

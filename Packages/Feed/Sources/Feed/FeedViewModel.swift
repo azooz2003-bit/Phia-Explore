@@ -50,15 +50,13 @@ public class FeedViewModel {
                 return
             }
 
-            let existing = gridLeftItems + gridRightItems
+            var seenIDs = Set((gridLeftItems + gridRightItems).map(\.id))
 
             let allMasonryItems = response.sections
                 .filter { $0.componentType == .masonry }
                 .compactMap { $0.data.items }
                 .flatMap { $0.compactMap { MasonryItem(fromResponse: $0) } }
-                .filter { newItem in
-                    !existing.contains { $0.id == newItem.id }
-                }
+                .filter { seenIDs.insert($0.id).inserted }
 
             for masonryItem in allMasonryItems {
                 if leftColumnEstHeight <= rightColumnEstHeight {

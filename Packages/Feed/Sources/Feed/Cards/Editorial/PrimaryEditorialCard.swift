@@ -11,6 +11,7 @@ import PhiaAPI
 
 struct PrimaryEditorialCard: View {
     static let estimatedHeight: CGFloat = 395
+    static let estimatedPrimaryImageHeight: CGFloat = 178
 
     let editorial: FeedEditorial
     let onEditorialSelection: (FeedEditorial) -> Void
@@ -50,12 +51,14 @@ struct PrimaryEditorialCard: View {
         AsyncImage(url: editorial.imgUrl) { phase in
             switch phase {
             case .empty:
-                ProgressView() // TODO: update
+                ProgressView()
+                    .frame(height: Self.estimatedPrimaryImageHeight)// TODO: update
             case .success(let image):
                 image
                     .resizable()
             case .failure(let error):
-                Text("Bad: \(error.localizedDescription)") // TODO: use sf symbol
+                Text("Bad: \(error.localizedDescription)")
+                    .frame(height: Self.estimatedPrimaryImageHeight) // TODO: use sf symbol
             @unknown default:
                 fatalError()
             }

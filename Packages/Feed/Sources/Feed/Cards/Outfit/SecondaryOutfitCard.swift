@@ -11,11 +11,12 @@ import PhiaAPI
 
 struct SecondaryOutfitCard: View {
     static let estimatedHeight: CGFloat = 278
+    static let estimatedPrimaryImageHeight: CGFloat = 238
 
     let outfit: FeedOutfit
 
     var body: some View {
-        GenericItemCard(title: outfit.name, titleLineLimit: 1, subtitle: nil, imageUrls: [outfit.imgUrl].compactMap(\.self))
+        GenericItemCard(title: outfit.name, titleLineLimit: 1, subtitle: nil, imageUrls: [outfit.imgUrl].compactMap(\.self), estimatedPrimaryImageHeight: Self.estimatedPrimaryImageHeight)
     }
 }
 
