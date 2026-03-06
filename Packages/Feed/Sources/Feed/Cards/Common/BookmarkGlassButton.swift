@@ -1,5 +1,5 @@
 //
-//  BookmarkGlass.swift
+//  BookmarkGlassButton.swift
 //  Feed
 //
 //  Created by Abdulaziz Albahar on 3/4/26.
@@ -7,11 +7,14 @@
 
 import DesignSystem
 
-struct BookmarkGlass: View {
+struct BookmarkGlassButton: View {
     let isBookmarked: Bool
+    let action: () -> Void
 
     var body: some View {
-        Group {
+        Button {
+            action()
+        } label: {
             if #available(iOS 26.0, *) {
                 Image(isBookmarked ? .Custom.bookmarkSaved : .Custom.bookmarkNormal)
                     .frame(width: 32, height: 32)
@@ -22,7 +25,7 @@ struct BookmarkGlass: View {
                     .padding(8)
             }
         }
-        .phiaGlass()
+        .buttonStyle(.phiaGlass)
     }
 }
 
@@ -31,10 +34,8 @@ struct BookmarkGlass: View {
         .fill(.blue)
         .overlay {
             VStack {
-                Button {
+                BookmarkGlassButton(isBookmarked: true) {
                     print("Pressed")
-                } label: {
-                    BookmarkGlass(isBookmarked: true)
                 }
             }
         }

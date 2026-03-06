@@ -33,10 +33,8 @@ struct GenericItemCard: View {
             catalogScrollView(for: imageUrls)
                 .overlay(alignment: .topTrailing) {
                     // TODO: implement repository for bookmarked items
-                    Button {
+                    BookmarkGlassButton(isBookmarked: false) {
 
-                    } label: {
-                        BookmarkGlass(isBookmarked: false)
                     }
                     .padding([.trailing, .top], 12)
                 }

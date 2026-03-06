@@ -24,3 +24,14 @@ public extension View {
             .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
     }
 }
+
+public struct PhiaGlassButtonStyle: PrimitiveButtonStyle {
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .phiaGlass()
+    }
+}
+
+public extension PrimitiveButtonStyle where Self == PhiaGlassButtonStyle {
+    static var phiaGlass: PhiaGlassButtonStyle { PhiaGlassButtonStyle() }
+}

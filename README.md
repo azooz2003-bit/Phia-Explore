@@ -18,10 +18,17 @@
 ### Editorial (Secondary) Card
 - The 3 product images on the right side are equal height (dynamic based on primary editorial image) but fixed width.
 
+### Masonry Grid
+- I use the estimated height of each feed item type as a heursitic to place the feed item into the appropriate column.
+
 ## TODO
 - Image caching for all images
 - User defaults bookmark tracking
 - Improved error messaging in async images
 - Paging indicator complete logic
 - Handle nonexistent img url cases gracefully
+- Show placeholder stubs while explore is loading
+- Show error message at end of page load if failure
+- Prevent async image loading cancellation on disappear.
+- Handle sub-item selection
 

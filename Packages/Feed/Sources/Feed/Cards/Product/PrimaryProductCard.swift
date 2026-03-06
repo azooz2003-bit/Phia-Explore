@@ -1,5 +1,5 @@
 //
-//  PrimaryProductView.swift
+//  PrimaryProductCard.swift
 //  Feed
 //
 //  Created by Abdulaziz Albahar on 3/4/26.
@@ -9,7 +9,7 @@ import SwiftUI
 import DesignSystem
 import PhiaAPI
 
-struct PrimaryProductView: View {
+struct PrimaryProductCard: View {
     static let estimatedHeight: CGFloat = 352
 
     let product: FeedProduct
@@ -39,7 +39,7 @@ struct PrimaryProductView: View {
     FontManager.registerFonts()
 
     return VStack(alignment: .center) {
-        PrimaryProductView(product: .primaryPreview)
+        PrimaryProductCard(product: .primaryPreview)
             .frame(width: 200)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
