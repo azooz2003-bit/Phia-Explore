@@ -11,7 +11,7 @@ import PhiaAPI
 @Observable
 public class FeedViewModel {
     let feedRepository: FeedRepository
-    let pageLimit = 30
+    let pageLimit = 60
     var nextOffset: Int = 0
     var hasMore = true
 
@@ -44,18 +44,20 @@ public class FeedViewModel {
         }
 
         do {
-            let response = try await feedRepository.fetchAuthenticatedExploreFeed(offset: nextOffset*pageLimit, limit: pageLimit)
+            let response = try await feedRepository.fetchAuthenticatedExploreFeed(offset: nextOffset, limit: pageLimit)
 
             guard !Task.isCancelled else {
                 return
             }
+
+            let existing = gridLeftItems + gridRightItems
 
             let allMasonryItems = response.sections
                 .filter { $0.componentType == .masonry }
                 .compactMap { $0.data.items }
                 .flatMap { $0.compactMap { MasonryItem(fromResponse: $0) } }
                 .filter { newItem in
-                    !(gridLeftItems + gridRightItems).contains { $0.id == newItem.id }
+                    !existing.contains { $0.id == newItem.id }
                 }
 
             for masonryItem in allMasonryItems {

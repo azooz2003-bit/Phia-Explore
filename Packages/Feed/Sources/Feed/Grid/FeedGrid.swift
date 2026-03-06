@@ -77,14 +77,16 @@ public struct FeedGrid: View {
             }
         }
         .onAppear {
+            print("Page end reached.")
             paginate()
         }
     }
 
     func paginate() {
-        paginationTask?.cancel()
+        guard paginationTask == nil else { return }
         paginationTask = Task {
             await feedVM.didReachPageEnd()
+            paginationTask = nil
         }
     }
 
