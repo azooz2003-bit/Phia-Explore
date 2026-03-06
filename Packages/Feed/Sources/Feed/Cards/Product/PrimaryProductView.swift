@@ -10,6 +10,8 @@ import DesignSystem
 import PhiaAPI
 
 struct PrimaryProductView: View {
+    static let estimatedHeight: CGFloat = 352
+
     let product: FeedProduct
 
     let formatter: NumberFormatter = {

@@ -10,6 +10,8 @@ import DesignSystem
 import PhiaAPI
 
 struct SecondaryEditorialCard: View {
+    static let estimatedHeight: CGFloat = 305
+
     let editorial: FeedEditorial
     
     var body: some View {

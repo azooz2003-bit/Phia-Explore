@@ -10,6 +10,8 @@ import DesignSystem
 import PhiaAPI
 
 struct PrimaryEditorialCard: View {
+    static let estimatedHeight: CGFloat = 395
+
     let editorial: FeedEditorial
     let onEditorialSelection: (FeedEditorial) -> Void
     let onProductSelection: (FeedProduct) -> Void

@@ -10,6 +10,8 @@ import DesignSystem
 import PhiaAPI
 
 struct PrimaryOutfitCard: View {
+    static let estimatedHeight: CGFloat = 420
+
     let outfit: FeedOutfit
 
     var imageUrls: [URL] {
