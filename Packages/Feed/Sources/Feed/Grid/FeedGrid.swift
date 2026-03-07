@@ -28,8 +28,10 @@ public struct FeedGrid: View {
                 pageEnd
             }
             .padding(.horizontal, 8)
+            .padding(.top, 6)
         }
         .scrollIndicators(.hidden)
+        .background(Color.Background.tertiary)
     }
 
     @ViewBuilder

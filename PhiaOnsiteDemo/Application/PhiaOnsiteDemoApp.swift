@@ -5,7 +5,6 @@ import ImageService
 
 @main
 struct PhiaOnsiteDemoApp: App {
-    let feedVM = FeedViewModel(feedRepository: RemoteFeedRepository())
     let imageService = ImageService()
 
     init() {
@@ -14,9 +13,7 @@ struct PhiaOnsiteDemoApp: App {
 
     var body: some Scene {
         WindowGroup {
-            FeedGrid(feedVM: feedVM, imageService: imageService)
-                .background(Color.Background.tertiary)
-                .background(ignoresSafeAreaEdges: .all)
+            RootView(feedRepository: RemoteFeedRepository(), imageService: imageService)
         }
     }
 }
