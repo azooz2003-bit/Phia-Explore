@@ -11,6 +11,7 @@ import Foundation
 actor InMemoryImageCache {
     struct CacheEntry {
         let image: UIImage
+        let aspectRatio: CGFloat
         let byteSize: Int
         var lastTouched: Date = .now
     }
@@ -41,13 +42,18 @@ actor InMemoryImageCache {
             }
         }
 
-        cache[url] = CacheEntry(image: image, byteSize: byteSize)
+        let aspectRatio = image.size.width / image.size.height
+        cache[url] = CacheEntry(image: image, aspectRatio: aspectRatio, byteSize: byteSize)
         currentBytes += byteSize
     }
 
     func get(at url: URL) -> UIImage? {
         cache[url]?.lastTouched = .now
         return cache[url]?.image
+    }
+
+    func getAspectRatio(for url: URL) -> CGFloat? {
+        return cache[url]?.aspectRatio
     }
 }
 

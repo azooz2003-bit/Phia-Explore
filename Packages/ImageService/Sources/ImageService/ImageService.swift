@@ -20,6 +20,13 @@ public actor ImageService {
 
     public init() {}
 
+    public func cachedAspectRatio(for url: URL) async -> CGFloat? {
+        if let ratio = await inMemoryCache.getAspectRatio(for: url) {
+            return ratio
+        }
+        return await diskCache.getAspectRatio(for: url)
+    }
+
     public func fetchImage(at url: URL) async throws -> UIImage {
         if let cached = await inMemoryCache.get(at: url) {
             return cached

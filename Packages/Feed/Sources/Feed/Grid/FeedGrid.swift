@@ -26,7 +26,6 @@ public struct FeedGrid: View {
                 gridContent
 
                 pageEnd
-                // TODO: error message here if any
             }
             .padding(.horizontal, 8)
         }
