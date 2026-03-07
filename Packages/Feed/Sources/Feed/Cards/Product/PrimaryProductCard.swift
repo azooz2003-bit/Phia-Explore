@@ -55,3 +55,25 @@ struct PrimaryProductCard: View {
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .background(Color.Background.tertiary)
 }
+
+#Preview("No image, no subtitle") {
+    FontManager.registerFonts()
+
+    return VStack(alignment: .center) {
+        GenericItemCard(title: "Ophidia mini bag", titleLineLimit: 2, subtitle: nil, imageUrls: nil, estimatedPrimaryImageHeight: PrimaryProductCard.estimatedPrimaryImageHeight)
+            .frame(width: 200)
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(Color.Background.tertiary)
+}
+
+#Preview("No image") {
+    FontManager.registerFonts()
+
+    return VStack(alignment: .center) {
+        PrimaryProductCard(product: .noImagePreview)
+            .frame(width: 200)
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(Color.Background.tertiary)
+}

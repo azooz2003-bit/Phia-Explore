@@ -211,4 +211,13 @@ extension FeedProduct {
         productUrl: URL(string: "https://www.gucci.com/us/en/pr/women/handbags/mini-bags-for-women/ophidia-mini-bag-p-764960K9GSG8367")!,
         imgUrl: URL(string: "https://cdn.phia.com/editorial-manager/products/f0bf9dae2062eb7754a496a169fd827521a9f28ebaa1be39af35136e95b1e8b1.png")
     )
+
+    public static let noImagePreview = FeedProduct(
+        id: "ENTITY_TYPE_PRODUCT-preview-no-image",
+        itemName: "Ophidia mini bag",
+        brand: "Gucci",
+        price: 950.0,
+        productUrl: URL(string: "https://www.gucci.com")!,
+        imgUrl: nil
+    )
 }

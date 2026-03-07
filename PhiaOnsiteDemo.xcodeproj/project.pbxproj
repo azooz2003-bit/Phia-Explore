@@ -32,6 +32,7 @@
 				DesignSystem,
 				Detail,
 				Feed,
+				ImageService,
 				PhiaAPI,
 			);
 			target = 4ECB8EFA2E5E062600F46296 /* PhiaOnsiteDemo */;

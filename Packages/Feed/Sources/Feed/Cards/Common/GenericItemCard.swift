@@ -57,7 +57,8 @@ struct GenericItemCard<Subtitle: View>: View {
                 }
   
         } else {
-            EmptyView()
+            Color.clear
+                .frame(height: 0)
         }
     }
 

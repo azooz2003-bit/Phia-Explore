@@ -15,8 +15,15 @@ struct SecondaryOutfitCard: View {
 
     let outfit: FeedOutfit
 
+    var imageUrls: [URL] {
+        let allUrls = [outfit.imgUrl].compactMap(\.self) + (outfit.products?.compactMap(\.imgUrl) ?? [])
+        return [
+            allUrls.first
+        ].compactMap(\.self)
+    }
+
     var body: some View {
-        GenericItemCard(title: outfit.name, titleLineLimit: 1, subtitle: nil, imageUrls: [outfit.imgUrl].compactMap(\.self), estimatedPrimaryImageHeight: Self.estimatedPrimaryImageHeight)
+        GenericItemCard(title: outfit.name, titleLineLimit: 1, subtitle: nil, imageUrls: imageUrls, estimatedPrimaryImageHeight: Self.estimatedPrimaryImageHeight)
     }
 }
 

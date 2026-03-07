@@ -4,31 +4,23 @@
 import PackageDescription
 
 let package = Package(
-    name: "Feed",
+    name: "ImageService",
     platforms: [
         .iOS(.v18)
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "Feed",
-            targets: ["Feed"],
+            name: "ImageService",
+            targets: ["ImageService"]
         ),
-    ],
-    dependencies: [
-        .package(path: "../PhiaAPI"),
-        .package(path: "../DesignSystem"),
-        .package(path: "../ImageService")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "Feed",
-            dependencies: ["PhiaAPI", "DesignSystem", "ImageService"],
-            swiftSettings: [
-                .defaultIsolation(MainActor.self)
-            ]
+            name: "ImageService"
         ),
-    ],
+
+    ]
 )
