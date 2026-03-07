@@ -63,15 +63,18 @@ public struct FeedGrid: View {
     var pageEnd: some View {
         Group {
             if let error = feedVM.error {
-                VStack {
+                VStack(spacing: 8) {
                     Text(error.title)
-                        .font(.largeTitle)
-                        .bold()
+                        .customFont(.Label.large)
+                        .foregroundStyle(Color.Content.primary)
                     Text(error.errorDescription)
-                        .font(.caption)
+                        .customFont(.Caption.small)
+                        .foregroundStyle(Color.Foreground.disabled)
+                        .multilineTextAlignment(.center)
                 }
-                .lineLimit(nil)
-                // TODO: improve error UI
+                .padding(.vertical, 32)
+                .padding(.horizontal, 24)
+                .frame(maxWidth: .infinity)
             } else {
                 Color.clear
             }
