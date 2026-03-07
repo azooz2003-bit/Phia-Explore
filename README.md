@@ -24,12 +24,9 @@
 ## TODO
 - User defaults bookmark tracking
 - Paging indicator complete logic
-- Image caching for all images
-- Prevent async image loading cancellation on disappear.
-- Show error message at end of page load if failure
-
-
 - Improved error messaging in async images
+- Improve memory performance with image hide on disappear
+- Use different attribute for image filename
 - Show placeholder stubs while explore is loading
 - Handle sub-item selection
 - Handle nonexistent img url cases gracefully

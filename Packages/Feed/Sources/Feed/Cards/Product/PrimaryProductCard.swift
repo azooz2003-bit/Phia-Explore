@@ -8,12 +8,14 @@
 import SwiftUI
 import DesignSystem
 import PhiaAPI
+import ImageService
 
 struct PrimaryProductCard: View {
     static let estimatedHeight: CGFloat = 352
     static let estimatedPrimaryImageHeight: CGFloat = 270
 
     let product: FeedProduct
+    let imageService: ImageService
 
     let formatter: NumberFormatter = {
         let formatter = NumberFormatter()
@@ -28,7 +30,7 @@ struct PrimaryProductCard: View {
     }
 
     var body: some View {
-        GenericItemCard(title: product.itemName, titleLineLimit: 2, imageUrls: [product.imgUrl].compactMap(\.self), estimatedPrimaryImageHeight: Self.estimatedPrimaryImageHeight) {
+        GenericItemCard(title: product.itemName, titleLineLimit: 2, imageUrls: [product.imgUrl].compactMap(\.self), estimatedPrimaryImageHeight: Self.estimatedPrimaryImageHeight, imageService: imageService) {
             HStack(spacing: 0) {
                 Text(product.brand.uppercased())
                     .lineLimit(1)
@@ -49,7 +51,7 @@ struct PrimaryProductCard: View {
     FontManager.registerFonts()
 
     return VStack(alignment: .center) {
-        PrimaryProductCard(product: .primaryPreview)
+        PrimaryProductCard(product: .primaryPreview, imageService: ImageService())
             .frame(width: 200)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -60,7 +62,7 @@ struct PrimaryProductCard: View {
     FontManager.registerFonts()
 
     return VStack(alignment: .center) {
-        GenericItemCard(title: "Ophidia mini bag", titleLineLimit: 2, subtitle: nil, imageUrls: nil, estimatedPrimaryImageHeight: PrimaryProductCard.estimatedPrimaryImageHeight)
+        GenericItemCard(title: "Ophidia mini bag", titleLineLimit: 2, subtitle: nil, imageUrls: nil, estimatedPrimaryImageHeight: PrimaryProductCard.estimatedPrimaryImageHeight, imageService: ImageService())
             .frame(width: 200)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -71,7 +73,7 @@ struct PrimaryProductCard: View {
     FontManager.registerFonts()
 
     return VStack(alignment: .center) {
-        PrimaryProductCard(product: .noImagePreview)
+        PrimaryProductCard(product: .noImagePreview, imageService: ImageService())
             .frame(width: 200)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)

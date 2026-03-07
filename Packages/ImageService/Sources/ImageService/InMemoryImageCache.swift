@@ -11,38 +11,49 @@ import Foundation
 actor InMemoryImageCache {
     struct CacheEntry {
         let image: UIImage
+        let byteSize: Int
         var lastTouched: Date = .now
     }
 
-    let maxImages: Int
+    let maxBytes: Int
+    var currentBytes: Int = 0
     var cache: [URL : CacheEntry] = [:]
 
-    init(maxImages: Int) {
-        self.maxImages = maxImages
+    init(maxBytes: Int) {
+        self.maxBytes = maxBytes
     }
 
     func set(_ image: UIImage, for url: URL) {
-        if cache.keys.contains(url) {
-            cache[url] = CacheEntry(image: image)
-            return
+        let byteSize = image.bytesInMemory
+
+        if let existing = cache[url] {
+            currentBytes -= existing.byteSize
         }
 
-        if cache.count >= maxImages {
+        // remove cache entries until we have enough space for the max limit
+        while currentBytes + byteSize > maxBytes, !cache.isEmpty {
             let removeKey = cache.sorted {
                 $0.value.lastTouched < $1.value.lastTouched
             }.first?.key
 
-            // will always succeed since cache.count >= 100
-            if let removeKey {
-                cache.removeValue(forKey: removeKey)
+            if let removeKey, let removed = cache.removeValue(forKey: removeKey) {
+                currentBytes -= removed.byteSize
             }
         }
 
-        cache[url] = CacheEntry(image: image)
+        cache[url] = CacheEntry(image: image, byteSize: byteSize)
+        currentBytes += byteSize
     }
 
     func get(at url: URL) -> UIImage? {
         cache[url]?.lastTouched = .now
         return cache[url]?.image
+    }
+}
+
+private extension UIImage {
+    var bytesInMemory: Int {
+        guard let cgImage else { return 0 }
+        return cgImage.bytesPerRow * cgImage.height
     }
 }

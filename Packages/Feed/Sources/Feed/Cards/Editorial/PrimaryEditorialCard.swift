@@ -8,12 +8,14 @@
 import SwiftUI
 import DesignSystem
 import PhiaAPI
+import ImageService
 
 struct PrimaryEditorialCard: View {
     static let estimatedHeight: CGFloat = 395
     static let estimatedPrimaryImageHeight: CGFloat = 178
 
     let editorial: FeedEditorial
+    let imageService: ImageService
     let onEditorialSelection: (FeedEditorial) -> Void
     let onProductSelection: (FeedProduct) -> Void
 
@@ -47,24 +49,11 @@ struct PrimaryEditorialCard: View {
 
     @ViewBuilder
     var primaryImage: some View {
-        // TODO: add image caching fallback for `empty`
-        AsyncImage(url: editorial.imgUrl) { phase in
-            switch phase {
-            case .empty:
-                ProgressView()
-                    .frame(height: Self.estimatedPrimaryImageHeight)// TODO: update
-            case .success(let image):
-                image
-                    .resizable()
-            case .failure(let error):
-                Text("Bad: \(error.localizedDescription)")
-                    .frame(height: Self.estimatedPrimaryImageHeight) // TODO: use sf symbol
-            @unknown default:
-                fatalError()
-            }
+        if let imgUrl = editorial.imgUrl {
+            PhiaAsyncImage(url: imgUrl, estimatedHeight: Self.estimatedPrimaryImageHeight, imageService: imageService)
+                .aspectRatio(contentMode: .fit)
+                .clipShape(RoundedRectangle(cornerRadius: 6))
         }
-        .aspectRatio(contentMode: .fit)
-        .clipShape(RoundedRectangle(cornerRadius: 6))
     }
 
     @ViewBuilder
@@ -83,24 +72,14 @@ struct PrimaryEditorialCard: View {
 
     @ViewBuilder
     func productView(_ product: FeedProduct) -> some View {
-        AsyncImage(url: product.imgUrl) { phase in
-            switch phase {
-            case .empty:
-                ProgressView() // TODO: update
-            case .success(let image):
-                image
-                    .resizable()
-            case .failure(let error):
-                Text("Bad: \(error.localizedDescription)") // TODO: use sf symbol
-            @unknown default:
-                fatalError()
-            }
-        }
-        .aspectRatio(contentMode: .fill)
-        .frame(width: 123, height: 175)
-        .clipShape(RoundedRectangle(cornerRadius: 6))
-        .onTapGesture {
-            onProductSelection(product)
+        if let imgUrl = product.imgUrl {
+            PhiaAsyncImage(url: imgUrl, estimatedHeight: 175, imageService: imageService)
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 123, height: 175)
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+                .onTapGesture {
+                    onProductSelection(product)
+                }
         }
     }
 
@@ -134,19 +113,7 @@ struct PrimaryEditorialCard: View {
     var authorImage: some View {
         Group {
             if let authorImageURL = editorial.author?.imgUrl {
-                AsyncImage(url: authorImageURL) { phase in
-                    switch phase {
-                    case .empty:
-                        ProgressView() // TODO: update
-                    case .success(let image):
-                        image
-                            .resizable()
-                    case .failure(let error):
-                        Text("Bad: \(error.localizedDescription)") // TODO: use sf symbol
-                    @unknown default:
-                        fatalError()
-                    }
-                }
+                PhiaAsyncImage(url: authorImageURL, imageService: imageService)
             } else {
                 EmptyView()
             }
@@ -166,7 +133,7 @@ struct PrimaryEditorialCard: View {
 
     return VStack(alignment: .center) {
         Group {
-            PrimaryEditorialCard(editorial: focusedEditorial) { _ in
+            PrimaryEditorialCard(editorial: focusedEditorial, imageService: ImageService()) { _ in
                 print("Editorial selected")
             } onProductSelection: {
                 print("Product selected: \($0.itemName)")

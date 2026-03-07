@@ -8,6 +8,7 @@
 import SwiftUI
 import DesignSystem
 import PhiaAPI
+import ImageService
 
 struct GenericItemCard<Subtitle: View>: View {
     let title: String
@@ -15,14 +16,16 @@ struct GenericItemCard<Subtitle: View>: View {
     let subtitle: Subtitle
     let imageUrls: [URL]?
     let estimatedPrimaryImageHeight: CGFloat
+    let imageService: ImageService
 
     @State var currentPage: Int? = nil
 
-    init(title: String, titleLineLimit: Int, imageUrls: [URL]?, estimatedPrimaryImageHeight: CGFloat, @ViewBuilder subtitle: () -> Subtitle) {
+    init(title: String, titleLineLimit: Int, imageUrls: [URL]?, estimatedPrimaryImageHeight: CGFloat, imageService: ImageService, @ViewBuilder subtitle: () -> Subtitle) {
         self.title = title
         self.titleLineLimit = titleLineLimit
         self.imageUrls = imageUrls
         self.estimatedPrimaryImageHeight = estimatedPrimaryImageHeight
+        self.imageService = imageService
         self.subtitle = subtitle()
     }
 
@@ -81,25 +84,11 @@ struct GenericItemCard<Subtitle: View>: View {
     }
 
     @ViewBuilder
-    func imageView(for imgUrl: URL?) -> some View {
-        AsyncImage(url: imgUrl) { phase in
-            switch phase {
-            case .empty:
-                ProgressView() // TODO: update
-                    .frame(height: estimatedPrimaryImageHeight)
-            case .success(let image):
-                image
-                    .resizable()
-            case .failure(let error):
-                Text("Bad: \(error.localizedDescription)") // TODO: use sf symbol
-                    .frame(height: estimatedPrimaryImageHeight)
-            @unknown default:
-                fatalError()
-            }
-        }
-        .aspectRatio(contentMode: .fill)
-        .containerRelativeFrame(.horizontal)
-        .clipShape(RoundedRectangle(cornerRadius: 6))
+    func imageView(for imgUrl: URL) -> some View {
+        PhiaAsyncImage(url: imgUrl, estimatedHeight: estimatedPrimaryImageHeight, imageService: imageService)
+            .aspectRatio(contentMode: .fill)
+            .containerRelativeFrame(.horizontal)
+            .clipShape(RoundedRectangle(cornerRadius: 6))
     }
 
     @ViewBuilder
@@ -131,8 +120,8 @@ struct GenericItemCard<Subtitle: View>: View {
 }
 
 extension GenericItemCard where Subtitle == AnyView {
-    init(title: String, titleLineLimit: Int, subtitle: String?, imageUrls: [URL]?, estimatedPrimaryImageHeight: CGFloat) {
-        self.init(title: title, titleLineLimit: titleLineLimit, imageUrls: imageUrls, estimatedPrimaryImageHeight: estimatedPrimaryImageHeight) {
+    init(title: String, titleLineLimit: Int, subtitle: String?, imageUrls: [URL]?, estimatedPrimaryImageHeight: CGFloat, imageService: ImageService) {
+        self.init(title: title, titleLineLimit: titleLineLimit, imageUrls: imageUrls, estimatedPrimaryImageHeight: estimatedPrimaryImageHeight, imageService: imageService) {
             AnyView(
                 Group {
                     if let subtitle {
@@ -159,7 +148,7 @@ extension GenericItemCard where Subtitle == AnyView {
     FontManager.registerFonts()
 
     return VStack(alignment: .center) {
-        GenericItemCard(title: "focusedOutfit.name q wrqfegeqge", titleLineLimit: 1, subtitle: nil, imageUrls: urls, estimatedPrimaryImageHeight: PrimaryOutfitCard.estimatedHeight)
+        GenericItemCard(title: "focusedOutfit.name q wrqfegeqge", titleLineLimit: 1, subtitle: nil, imageUrls: urls, estimatedPrimaryImageHeight: PrimaryOutfitCard.estimatedHeight, imageService: ImageService())
             .frame(width: 200)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -176,7 +165,7 @@ extension GenericItemCard where Subtitle == AnyView {
     FontManager.registerFonts()
 
     return VStack(alignment: .center) {
-        GenericItemCard(title: "focusedOutfit.name q wrqfegeqge", titleLineLimit: 2, subtitle: "RHODE • $30", imageUrls: [urls[0]], estimatedPrimaryImageHeight: PrimaryOutfitCard.estimatedHeight)
+        GenericItemCard(title: "focusedOutfit.name q wrqfegeqge", titleLineLimit: 2, subtitle: "RHODE • $30", imageUrls: [urls[0]], estimatedPrimaryImageHeight: PrimaryOutfitCard.estimatedHeight, imageService: ImageService())
             .frame(width: 200)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)

@@ -8,12 +8,14 @@
 import SwiftUI
 import DesignSystem
 import PhiaAPI
+import ImageService
 
 struct SecondaryOutfitCard: View {
     static let estimatedHeight: CGFloat = 278
     static let estimatedPrimaryImageHeight: CGFloat = 238
 
     let outfit: FeedOutfit
+    let imageService: ImageService
 
     var imageUrls: [URL] {
         let allUrls = [outfit.imgUrl].compactMap(\.self) + (outfit.products?.compactMap(\.imgUrl) ?? [])
@@ -23,7 +25,7 @@ struct SecondaryOutfitCard: View {
     }
 
     var body: some View {
-        GenericItemCard(title: outfit.name, titleLineLimit: 1, subtitle: nil, imageUrls: imageUrls, estimatedPrimaryImageHeight: Self.estimatedPrimaryImageHeight)
+        GenericItemCard(title: outfit.name, titleLineLimit: 1, subtitle: nil, imageUrls: imageUrls, estimatedPrimaryImageHeight: Self.estimatedPrimaryImageHeight, imageService: imageService)
     }
 }
 
@@ -31,7 +33,7 @@ struct SecondaryOutfitCard: View {
     FontManager.registerFonts()
 
     return VStack(alignment: .center) {
-        SecondaryOutfitCard(outfit: .secondaryPreview)
+        SecondaryOutfitCard(outfit: .secondaryPreview, imageService: ImageService())
             .frame(width: 200)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -42,7 +44,7 @@ struct SecondaryOutfitCard: View {
     FontManager.registerFonts()
 
     return VStack(alignment: .center) {
-        SecondaryOutfitCard(outfit: .secondaryPreview2)
+        SecondaryOutfitCard(outfit: .secondaryPreview2, imageService: ImageService())
             .frame(width: 200)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)

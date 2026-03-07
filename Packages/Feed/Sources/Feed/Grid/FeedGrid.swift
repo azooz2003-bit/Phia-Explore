@@ -8,13 +8,16 @@
 import SwiftUI
 import DesignSystem
 import PhiaAPI
+import ImageService
 
 public struct FeedGrid: View {
     @State var feedVM: FeedViewModel
     @State var paginationTask: Task<Void, Never>?
+    let imageService: ImageService
 
-    public init(feedVM: FeedViewModel) {
+    public init(feedVM: FeedViewModel, imageService: ImageService) {
         self.feedVM = feedVM
+        self.imageService = imageService
     }
 
     public var body: some View {
@@ -99,21 +102,21 @@ public struct FeedGrid: View {
         case .outfit(let variant):
             switch variant {
             case .primary(let outfit):
-                PrimaryOutfitCard(outfit: outfit)
+                PrimaryOutfitCard(outfit: outfit, imageService: imageService)
             case .secondary(let outfit):
-                SecondaryOutfitCard(outfit: outfit)
+                SecondaryOutfitCard(outfit: outfit, imageService: imageService)
             }
         case .editorial(let variant):
             switch variant {
             case .primary(let editorial):
-                PrimaryEditorialCard(editorial: editorial) { _ in } onProductSelection: { _ in }
+                PrimaryEditorialCard(editorial: editorial, imageService: imageService) { _ in } onProductSelection: { _ in }
             case .secondary(let editorial):
-                SecondaryEditorialCard(editorial: editorial)
+                SecondaryEditorialCard(editorial: editorial, imageService: imageService)
             }
         case .product(let variant):
             switch variant {
             case .primary(let product):
-                PrimaryProductCard(product: product)
+                PrimaryProductCard(product: product, imageService: imageService)
             }
         }
     }
@@ -134,6 +137,6 @@ public struct FeedGrid: View {
         .outfit(.secondary(.secondaryPreview2)),
     ]
 
-    return FeedGrid(feedVM: vm)
+    return FeedGrid(feedVM: vm, imageService: ImageService())
         .background(Color.Background.tertiary)
 }

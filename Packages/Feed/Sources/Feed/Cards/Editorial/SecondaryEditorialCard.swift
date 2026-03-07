@@ -8,12 +8,14 @@
 import SwiftUI
 import DesignSystem
 import PhiaAPI
+import ImageService
 
 struct SecondaryEditorialCard: View {
     static let estimatedHeight: CGFloat = 305
     static let estimatedPrimaryImageHeight: CGFloat = 241
 
     let editorial: FeedEditorial
+    let imageService: ImageService
     
     var body: some View {
         VStack(spacing: 10) {
@@ -54,41 +56,23 @@ struct SecondaryEditorialCard: View {
     }
 
     @ViewBuilder
-    func image(for imgUrl: URL?, estimatedHeight: CGFloat? = nil) -> some View {
+    func primaryImage(for imgUrl: URL?) -> some View {
         if let imgUrl {
-            AsyncImage(url: imgUrl) { phase in
-                switch phase {
-                case .empty:
-                    ProgressView() // TODO: update
-                        .frame(height: estimatedHeight)
-                case .success(let image):
-                    image
-                        .resizable()
-                case .failure(let error):
-                    Text("Bad: \(error.localizedDescription)") // TODO: use sf symbol
-                        .frame(height: estimatedHeight)
-                @unknown default:
-                    fatalError()
-                }
-            }
-        } else {
-            EmptyView()
+            PhiaAsyncImage(url: imgUrl, estimatedHeight: Self.estimatedPrimaryImageHeight, imageService: imageService)
+                .aspectRatio(contentMode: .fit)
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+                .frame(maxWidth: .infinity)
         }
     }
 
     @ViewBuilder
-    func primaryImage(for imgUrl: URL?) -> some View {
-        image(for: imgUrl, estimatedHeight: Self.estimatedPrimaryImageHeight)
-            .aspectRatio(contentMode: .fit)
-            .clipShape(RoundedRectangle(cornerRadius: 6))
-    }
-
-    @ViewBuilder
     func productImage(for imgUrl: URL?) -> some View {
-        image(for: imgUrl)
-            .aspectRatio(contentMode: .fill)
-            .frame(width: 40)
-            .clipShape(RoundedRectangle(cornerRadius: 4))
+        if let imgUrl {
+            PhiaAsyncImage(url: imgUrl, imageService: imageService)
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 40)
+                .clipShape(RoundedRectangle(cornerRadius: 4))
+        }
     }
 
     @ViewBuilder
@@ -121,7 +105,7 @@ struct SecondaryEditorialCard: View {
     FontManager.registerFonts()
 
     return VStack(alignment: .center) {
-        SecondaryEditorialCard(editorial: .secondaryPreview)
+        SecondaryEditorialCard(editorial: .secondaryPreview, imageService: ImageService())
             .frame(width: 200)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -132,7 +116,7 @@ struct SecondaryEditorialCard: View {
     FontManager.registerFonts()
 
     return VStack(alignment: .center) {
-        SecondaryEditorialCard(editorial: .secondaryPreview2)
+        SecondaryEditorialCard(editorial: .secondaryPreview2, imageService: ImageService())
             .frame(width: 200)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
