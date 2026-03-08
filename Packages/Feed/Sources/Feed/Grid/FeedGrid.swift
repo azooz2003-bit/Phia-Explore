@@ -110,7 +110,7 @@ public struct FeedGrid: View {
         case .editorial(let variant):
             switch variant {
             case .primary(let editorial):
-                PrimaryEditorialCard(editorial: editorial, imageService: imageService) { _ in } onProductSelection: { _ in }
+                PrimaryEditorialCard(editorial: editorial, imageService: imageService)
             case .secondary(let editorial):
                 SecondaryEditorialCard(editorial: editorial, imageService: imageService)
             }

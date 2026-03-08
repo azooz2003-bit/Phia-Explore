@@ -16,9 +16,6 @@ struct PrimaryEditorialCard: View {
 
     let editorial: FeedEditorial
     let imageService: ImageService
-    let onEditorialSelection: (FeedEditorial) -> Void
-    let onProductSelection: (FeedProduct) -> Void
-
     var body: some View {
         VStack(spacing: 4) {
             primaryImageSection
@@ -31,9 +28,6 @@ struct PrimaryEditorialCard: View {
         }
         .background(Color.Background.primary)
         .clipShape(RoundedRectangle(cornerRadius: 6))
-        .onTapGesture {
-            onEditorialSelection(editorial)
-        }
     }
 
     @ViewBuilder
@@ -78,9 +72,6 @@ struct PrimaryEditorialCard: View {
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 123, height: 175)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
-                .onTapGesture {
-                    onProductSelection(product)
-                }
         }
     }
 
@@ -134,11 +125,7 @@ struct PrimaryEditorialCard: View {
 
     return VStack(alignment: .center) {
         Group {
-            PrimaryEditorialCard(editorial: focusedEditorial, imageService: ImageService()) { _ in
-                print("Editorial selected")
-            } onProductSelection: {
-                print("Product selected: \($0.itemName)")
-            }
+            PrimaryEditorialCard(editorial: focusedEditorial, imageService: ImageService())
         }
         .frame(width: 200)
     }

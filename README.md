@@ -24,7 +24,4 @@
 ## TODO
 - User defaults bookmark tracking
 - Basic detail view with all info for each card type
-- Improved error messaging in async images
 - Improve memory performance with image hide on disappear
-- Use different attribute for image filename
-- Handle sub-item selection
