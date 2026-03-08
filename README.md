@@ -21,6 +21,12 @@
 #### Masonry Grid
 - I use the estimated height of each feed item type as a heursitic to place the feed item into the appropriate column.
 
+### Masonry Grid - Architecture
+
+I decided to go with the approach of an HStack of two LazyVStacks instead of the Layout protocol since the Layout protocol computes sizes and other subview data without the subview necessarily being on screen (no lazy loading). 
+
+The two LazyVStack approach still has a small issue though since the two lazy containers are independent of each other, and can't synchronize their height estimation, leading to a "push effect" as you scroll up where one column's contents get pushed down.
+
 ## TODO
 - User defaults bookmark tracking
 - Basic detail view with all info for each card type
