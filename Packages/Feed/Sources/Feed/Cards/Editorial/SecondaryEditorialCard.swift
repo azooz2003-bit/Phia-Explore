@@ -16,7 +16,11 @@ struct SecondaryEditorialCard: View {
 
     let editorial: FeedEditorial
     let imageService: ImageService
-    
+
+    var imageUrls: [URL] {
+        [editorial.imgUrl].compactMap(\.self) + (editorial.products?.compactMap(\.imgUrl) ?? [])
+    }
+
     var body: some View {
         VStack(spacing: 10) {
             visualContent
@@ -30,20 +34,19 @@ struct SecondaryEditorialCard: View {
     @ViewBuilder
     var visualContent: some View {
         HStack(spacing: 4) {
-            primaryImage(for: editorial.imgUrl)
+            primaryImage(for: imageUrls.first)
                 .fixedSize(horizontal: false, vertical: true)
 
             VStack(spacing: 4) {
-                let products = editorial.products ?? []
+                let productImageUrls = Array(imageUrls.dropFirst().prefix(3))
 
-                ForEach(products.prefix(3), id: \.id) { product in
-                    productImage(for: product.imgUrl)
+                ForEach(productImageUrls.indices, id: \.self) { i in
+                    productImage(for: productImageUrls[i])
                         .frame(maxHeight: .infinity)
                 }
 
-                if products.count < 3 {
-                    // Add space blocks to preserve product image size
-                    let spacesToAdd = 3 - products.count
+                if productImageUrls.count < 3 {
+                    let spacesToAdd = 3 - productImageUrls.count
                     ForEach(0..<spacesToAdd, id: \.self) { _ in
                         Spacer()
                             .frame(maxHeight: .infinity)
@@ -66,13 +69,11 @@ struct SecondaryEditorialCard: View {
     }
 
     @ViewBuilder
-    func productImage(for imgUrl: URL?) -> some View {
-        if let imgUrl {
-            PhiaAsyncImage(url: imgUrl, imageService: imageService)
-                .aspectRatio(contentMode: .fill)
-                .frame(width: 40)
-                .clipShape(RoundedRectangle(cornerRadius: 4))
-        }
+    func productImage(for imgUrl: URL) -> some View {
+        PhiaAsyncImage(url: imgUrl, imageService: imageService)
+            .aspectRatio(contentMode: .fill)
+            .frame(width: 40)
+            .clipShape(RoundedRectangle(cornerRadius: 4))
     }
 
     @ViewBuilder
