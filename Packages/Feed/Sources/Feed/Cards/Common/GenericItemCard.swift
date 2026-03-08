@@ -17,15 +17,19 @@ struct GenericItemCard<Subtitle: View>: View {
     let imageUrls: [URL]?
     let estimatedPrimaryImageHeight: CGFloat
     let imageService: ImageService
+    let isBookmarked: Bool
+    let onBookmarkToggle: () -> Void
 
     @State var currentPage: Int? = nil
 
-    init(title: String, titleLineLimit: Int, imageUrls: [URL]?, estimatedPrimaryImageHeight: CGFloat, imageService: ImageService, @ViewBuilder subtitle: () -> Subtitle) {
+    init(title: String, titleLineLimit: Int, imageUrls: [URL]?, estimatedPrimaryImageHeight: CGFloat, imageService: ImageService, isBookmarked: Bool, onBookmarkToggle: @escaping () -> Void, @ViewBuilder subtitle: () -> Subtitle) {
         self.title = title
         self.titleLineLimit = titleLineLimit
         self.imageUrls = imageUrls
         self.estimatedPrimaryImageHeight = estimatedPrimaryImageHeight
         self.imageService = imageService
+        self.isBookmarked = isBookmarked
+        self.onBookmarkToggle = onBookmarkToggle
         self.subtitle = subtitle()
     }
 
@@ -44,9 +48,8 @@ struct GenericItemCard<Subtitle: View>: View {
         if let imageUrls, !imageUrls.isEmpty {
             catalogScrollView(for: imageUrls)
                 .overlay(alignment: .topTrailing) {
-                    // TODO: implement repository for bookmarked items
-                    BookmarkGlassButton(isBookmarked: false) {
-
+                    BookmarkGlassButton(isBookmarked: isBookmarked) {
+                        onBookmarkToggle()
                     }
                     .padding([.trailing, .top], 12)
                 }
@@ -120,8 +123,8 @@ struct GenericItemCard<Subtitle: View>: View {
 }
 
 extension GenericItemCard where Subtitle == AnyView {
-    init(title: String, titleLineLimit: Int, subtitle: String?, imageUrls: [URL]?, estimatedPrimaryImageHeight: CGFloat, imageService: ImageService) {
-        self.init(title: title, titleLineLimit: titleLineLimit, imageUrls: imageUrls, estimatedPrimaryImageHeight: estimatedPrimaryImageHeight, imageService: imageService) {
+    init(title: String, titleLineLimit: Int, subtitle: String?, imageUrls: [URL]?, estimatedPrimaryImageHeight: CGFloat, imageService: ImageService, isBookmarked: Bool, onBookmarkToggle: @escaping () -> Void) {
+        self.init(title: title, titleLineLimit: titleLineLimit, imageUrls: imageUrls, estimatedPrimaryImageHeight: estimatedPrimaryImageHeight, imageService: imageService, isBookmarked: isBookmarked, onBookmarkToggle: onBookmarkToggle) {
             AnyView(
                 Group {
                     if let subtitle {
@@ -148,7 +151,7 @@ extension GenericItemCard where Subtitle == AnyView {
     FontManager.registerFonts()
 
     return VStack(alignment: .center) {
-        GenericItemCard(title: "focusedOutfit.name q wrqfegeqge", titleLineLimit: 1, subtitle: nil, imageUrls: urls, estimatedPrimaryImageHeight: PrimaryOutfitCard.estimatedHeight, imageService: ImageService())
+        GenericItemCard(title: "focusedOutfit.name q wrqfegeqge", titleLineLimit: 1, subtitle: nil, imageUrls: urls, estimatedPrimaryImageHeight: PrimaryOutfitCard.estimatedHeight, imageService: ImageService(), isBookmarked: false, onBookmarkToggle: {})
             .frame(width: 200)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -165,7 +168,7 @@ extension GenericItemCard where Subtitle == AnyView {
     FontManager.registerFonts()
 
     return VStack(alignment: .center) {
-        GenericItemCard(title: "focusedOutfit.name q wrqfegeqge", titleLineLimit: 2, subtitle: "RHODE • $30", imageUrls: [urls[0]], estimatedPrimaryImageHeight: PrimaryOutfitCard.estimatedHeight, imageService: ImageService())
+        GenericItemCard(title: "focusedOutfit.name q wrqfegeqge", titleLineLimit: 2, subtitle: "RHODE • $30", imageUrls: [urls[0]], estimatedPrimaryImageHeight: PrimaryOutfitCard.estimatedHeight, imageService: ImageService(), isBookmarked: false, onBookmarkToggle: {})
             .frame(width: 200)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)

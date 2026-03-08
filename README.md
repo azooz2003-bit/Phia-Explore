@@ -25,3 +25,4 @@
 - User defaults bookmark tracking
 - Basic detail view with all info for each card type
 - Improve memory performance with image hide on disappear
+- Cache aspect ratio for loading state frame

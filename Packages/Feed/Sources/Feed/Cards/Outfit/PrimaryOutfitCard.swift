@@ -16,6 +16,13 @@ struct PrimaryOutfitCard: View {
 
     let outfit: FeedOutfit
     let imageService: ImageService
+    @State var viewModel: CardViewModel
+
+    init(outfit: FeedOutfit, imageService: ImageService) {
+        self.outfit = outfit
+        self.imageService = imageService
+        self._viewModel = State(initialValue: CardViewModel(item: .outfit(id: outfit.id)))
+    }
 
     var imageUrls: [URL] {
         let outfitImgUrl = [outfit.imgUrl].compactMap(\.self)
@@ -25,7 +32,9 @@ struct PrimaryOutfitCard: View {
     }
 
     var body: some View {
-        GenericItemCard(title: outfit.name, titleLineLimit: 1, subtitle: nil, imageUrls: imageUrls, estimatedPrimaryImageHeight: Self.estimatedPrimaryImageHeight, imageService: imageService)
+        GenericItemCard(title: outfit.name, titleLineLimit: 1, subtitle: nil, imageUrls: imageUrls, estimatedPrimaryImageHeight: Self.estimatedPrimaryImageHeight, imageService: imageService, isBookmarked: viewModel.isBookmarked) {
+            viewModel.toggleBookmark()
+        }
     }
 }
 

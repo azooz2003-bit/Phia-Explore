@@ -16,6 +16,13 @@ struct PrimaryProductCard: View {
 
     let product: FeedProduct
     let imageService: ImageService
+    @State var viewModel: CardViewModel
+
+    init(product: FeedProduct, imageService: ImageService) {
+        self.product = product
+        self.imageService = imageService
+        self._viewModel = State(initialValue: CardViewModel(item: .product(id: product.id)))
+    }
 
     let formatter: NumberFormatter = {
         let formatter = NumberFormatter()
@@ -30,7 +37,7 @@ struct PrimaryProductCard: View {
     }
 
     var body: some View {
-        GenericItemCard(title: product.itemName, titleLineLimit: 2, imageUrls: [product.imgUrl].compactMap(\.self), estimatedPrimaryImageHeight: Self.estimatedPrimaryImageHeight, imageService: imageService) {
+        GenericItemCard(title: product.itemName, titleLineLimit: 2, imageUrls: [product.imgUrl].compactMap(\.self), estimatedPrimaryImageHeight: Self.estimatedPrimaryImageHeight, imageService: imageService, isBookmarked: viewModel.isBookmarked, onBookmarkToggle: { viewModel.toggleBookmark() }) {
             HStack(spacing: 0) {
                 Text(product.brand.uppercased())
                     .lineLimit(1)
@@ -62,7 +69,7 @@ struct PrimaryProductCard: View {
     FontManager.registerFonts()
 
     return VStack(alignment: .center) {
-        GenericItemCard(title: "Ophidia mini bag", titleLineLimit: 2, subtitle: nil, imageUrls: nil, estimatedPrimaryImageHeight: PrimaryProductCard.estimatedPrimaryImageHeight, imageService: ImageService())
+        GenericItemCard(title: "Ophidia mini bag", titleLineLimit: 2, subtitle: nil, imageUrls: nil, estimatedPrimaryImageHeight: PrimaryProductCard.estimatedPrimaryImageHeight, imageService: ImageService(), isBookmarked: false, onBookmarkToggle: {})
             .frame(width: 200)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
