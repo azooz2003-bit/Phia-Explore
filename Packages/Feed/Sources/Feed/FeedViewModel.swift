@@ -15,11 +15,11 @@ public class FeedViewModel {
         case authenticated
     }
 
-    let feedRepository: FeedRepository
-    let feedType: FeedType
-    let pageLimit = 60
-    var nextOffset: Int = 0
-    var hasMore = true
+    private let feedRepository: FeedRepository
+    private let feedType: FeedType
+    private let pageLimit = 60
+    private var nextOffset: Int = 0
+    private var hasMore = true
 
     var gridLeftItems = [MasonryItem]()
     var gridRightItems = [MasonryItem]()
