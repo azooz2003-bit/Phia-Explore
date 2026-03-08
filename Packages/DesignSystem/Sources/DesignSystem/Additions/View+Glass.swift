@@ -29,6 +29,7 @@ public struct PhiaGlassButtonStyle: PrimitiveButtonStyle {
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .phiaGlass()
+            .contentShape(Rectangle())
             .onTapGesture {
                 configuration.trigger()
             }

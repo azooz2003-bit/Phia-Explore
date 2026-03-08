@@ -10,9 +10,11 @@ import UIKit
 actor DiskImageCache {
     private let cacheDirectory: URL
 
-    init() {
-        let cachesDir = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
-        self.cacheDirectory = cachesDir.appendingPathComponent("ImageCache", isDirectory: true)
+    init?() {
+        guard let cachesDir = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first else {
+            return nil
+        }
+        self.cacheDirectory = cachesDir.appendingPathComponent("PhiaImageCache", isDirectory: true)
 
         if !FileManager.default.fileExists(atPath: cacheDirectory.path()) {
             try? FileManager.default.createDirectory(at: cacheDirectory, withIntermediateDirectories: true)
@@ -20,34 +22,49 @@ actor DiskImageCache {
     }
 
     func set(_ image: UIImage, for url: URL) {
-        guard let data = image.pngData() else { return }
-        let dir = entryDirectory(for: url)
-        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-
-        try? data.write(to: dir.appendingPathComponent("image"), options: .atomic)
+        let key = cacheKey(for: url)
 
         let aspectRatio = image.size.width / image.size.height
-        try? String(describing: aspectRatio).write(to: dir.appendingPathComponent("ratio"), atomically: true, encoding: .utf8)
+        try? String(describing: aspectRatio).write(
+            to: cacheDirectory.appendingPathComponent(key + ".ratio"),
+            atomically: true,
+            encoding: .utf8
+        )
+
+        guard let data = image.pngData() else { return }
+        try? data.write(
+            to: cacheDirectory.appendingPathComponent(key + ".image"),
+            options: .atomic
+        )
     }
 
     func get(at url: URL) -> UIImage? {
-        let filePath = entryDirectory(for: url).appendingPathComponent("image")
-        guard let data = try? Data(contentsOf: filePath) else { return nil }
-        return UIImage(data: data)
+        let key = cacheKey(for: url)
+        let imagePath = cacheDirectory.appendingPathComponent(key + ".image")
+        guard let data = try? Data(contentsOf: imagePath) else { return nil }
+        guard let image = UIImage(data: data) else { return nil }
+
+        let ratioPath = cacheDirectory.appendingPathComponent(key + ".ratio")
+        if !FileManager.default.fileExists(atPath: ratioPath.path()) {
+            let aspectRatio = image.size.width / image.size.height
+            try? String(describing: aspectRatio).write(to: ratioPath, atomically: true, encoding: .utf8)
+        }
+
+        return image
     }
 
-    func getAspectRatio(for url: URL) -> CGFloat? {
-        let ratioPath = entryDirectory(for: url).appendingPathComponent("ratio")
+    nonisolated func getAspectRatio(for url: URL) -> CGFloat? {
+        let key = cacheKey(for: url)
+        let ratioPath = cacheDirectory.appendingPathComponent(key + ".ratio")
         guard let string = try? String(contentsOf: ratioPath, encoding: .utf8),
               let value = Double(string) else { return nil }
         return CGFloat(value)
     }
 
-    private func entryDirectory(for url: URL) -> URL {
-        let encoded = Data(url.absoluteString.utf8)
+    nonisolated private func cacheKey(for url: URL) -> String {
+        Data(url.absoluteString.utf8)
             .base64EncodedString()
             .replacingOccurrences(of: "/", with: "_")
             .replacingOccurrences(of: "+", with: "-")
-        return cacheDirectory.appendingPathComponent(encoded, isDirectory: true)
     }
 }

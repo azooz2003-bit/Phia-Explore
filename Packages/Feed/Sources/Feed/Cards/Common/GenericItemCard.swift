@@ -54,8 +54,6 @@ struct GenericItemCard<Subtitle: View>: View {
                     .padding([.trailing, .top], 12)
                 }
                 .overlay(alignment: .bottom) {
-                    // TODO: ellipsis
-                    // TODO: get rid of paging ellipsis if count == 1
                     if imageUrls.count > 1 {
                         PageIndicators(totalPages: imageUrls.count, currentPage: currentPage ?? 0)
                             .padding(.bottom, 12)

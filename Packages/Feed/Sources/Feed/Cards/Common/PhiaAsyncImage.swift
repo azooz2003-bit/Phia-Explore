@@ -15,6 +15,7 @@ struct PhiaAsyncImage: View {
     let imageService: ImageService
 
     @State var state: ImageState = .idle
+    @State var cachedAspectRatio: CGFloat?
 
     enum ImageState {
         case idle
@@ -27,6 +28,7 @@ struct PhiaAsyncImage: View {
         self.url = url
         self.estimatedHeight = estimatedHeight
         self.imageService = imageService
+        self._cachedAspectRatio = State(initialValue: imageService.cachedAspectRatio(for: url))
     }
 
     var body: some View {
@@ -47,8 +49,14 @@ struct PhiaAsyncImage: View {
     var content: some View {
         switch state {
         case .idle, .loading:
-            ProgressView()
-                .frame(height: estimatedHeight)
+            if let cachedAspectRatio {
+                Color.clear
+                    .aspectRatio(cachedAspectRatio, contentMode: .fill)
+                    .overlay { ProgressView() }
+            } else {
+                ProgressView()
+                    .frame(height: estimatedHeight)
+            }
         case .loaded(let uiImage):
             Image(uiImage: uiImage)
                 .resizable()
@@ -60,6 +68,8 @@ struct PhiaAsyncImage: View {
     }
 
     private func loadImage() async {
+        if case .loaded = state { return }
+
         state = .loading
 
         do {

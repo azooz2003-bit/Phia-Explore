@@ -13,18 +13,15 @@ public actor ImageService {
         case decodingFailed
     }
 
-    private let diskCache = DiskImageCache()
+    private let diskCache: DiskImageCache?  = DiskImageCache()
     /// an in memory cache for max 75 MB
     private let inMemoryCache = InMemoryImageCache(maxBytes: 75 * 1024 * 1024)
     private var inFlightRequests: [URL: Task<UIImage, Error>] = [:]
 
     public init() {}
 
-    public func cachedAspectRatio(for url: URL) async -> CGFloat? {
-        if let ratio = await inMemoryCache.getAspectRatio(for: url) {
-            return ratio
-        }
-        return await diskCache.getAspectRatio(for: url)
+    nonisolated public func cachedAspectRatio(for url: URL) -> CGFloat? {
+        return diskCache?.getAspectRatio(for: url)
     }
 
     public func fetchImage(at url: URL) async throws -> UIImage {
@@ -32,7 +29,7 @@ public actor ImageService {
             return cached
         }
 
-        if let diskCached = await diskCache.get(at: url) {
+        if let diskCached = await diskCache?.get(at: url) {
             await inMemoryCache.set(diskCached, for: url)
             return diskCached
         }
@@ -56,7 +53,7 @@ public actor ImageService {
             inFlightRequests.removeValue(forKey: url)
 
             await inMemoryCache.set(image, for: url)
-            await diskCache.set(image, for: url)
+            await diskCache?.set(image, for: url)
 
             return image
         } catch {
