@@ -68,6 +68,7 @@ struct PrimaryEditorialCard: View {
             .fixedSize(horizontal: false, vertical: true)
         }
         .scrollIndicators(.hidden)
+        .padding(.top, editorial.imgUrl == nil ? 4 : 0)
     }
 
     @ViewBuilder

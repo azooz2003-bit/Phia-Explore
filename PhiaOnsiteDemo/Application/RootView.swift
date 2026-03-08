@@ -11,11 +11,13 @@ import Feed
 
 public struct RootView: View {
     @State var selectedTab: FeedTab = .explore
-    @State var feedVM: FeedViewModel
+    @State var exploreVM: FeedViewModel
+    @State var forYouVM: FeedViewModel
     let imageService: ImageService
 
     public init(feedRepository: FeedRepository, imageService: ImageService) {
-        self._feedVM = State(initialValue: FeedViewModel(feedRepository: feedRepository))
+        self._exploreVM = State(initialValue: FeedViewModel(feedRepository: feedRepository, feedType: .publicExplore))
+        self._forYouVM = State(initialValue: FeedViewModel(feedRepository: feedRepository, feedType: .authenticated))
         self.imageService = imageService
     }
 
@@ -27,11 +29,14 @@ public struct RootView: View {
             Group {
                 switch selectedTab {
                 case .explore:
-                    FeedGrid(feedVM: feedVM, imageService: imageService)
-                case .forYou, .trendReport:
+                    FeedGrid(feedVM: exploreVM, imageService: imageService)
+                case .forYou:
+                    FeedGrid(feedVM: forYouVM, imageService: imageService)
+                case .trendReport:
                     Text(selectedTab.rawValue)
                         .customFont(.Caption.medium)
-                        .foregroundStyle(Color.Foreground.secondary)                }
+                        .foregroundStyle(Color.Foreground.secondary)
+                }
             }
             .frame(maxHeight: .infinity)
         }

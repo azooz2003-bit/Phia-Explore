@@ -23,11 +23,8 @@
 
 ## TODO
 - User defaults bookmark tracking
-- Paging indicator complete logic
+- Basic detail view with all info for each card type
 - Improved error messaging in async images
 - Improve memory performance with image hide on disappear
 - Use different attribute for image filename
-- Show placeholder stubs while explore is loading
 - Handle sub-item selection
-- Handle nonexistent img url cases gracefully
-

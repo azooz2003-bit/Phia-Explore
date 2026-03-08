@@ -10,7 +10,13 @@ import PhiaAPI
 
 @Observable
 public class FeedViewModel {
+    public enum FeedType {
+        case publicExplore
+        case authenticated
+    }
+
     let feedRepository: FeedRepository
+    let feedType: FeedType
     let pageLimit = 60
     var nextOffset: Int = 0
     var hasMore = true
@@ -30,8 +36,9 @@ public class FeedViewModel {
         }
     }
 
-    public init(feedRepository: FeedRepository) {
+    public init(feedRepository: FeedRepository, feedType: FeedType = .publicExplore) {
         self.feedRepository = feedRepository
+        self.feedType = feedType
     }
 
     func didReachPageEnd() async {
@@ -44,7 +51,13 @@ public class FeedViewModel {
         }
 
         do {
-            let response = try await feedRepository.fetchAuthenticatedExploreFeed(offset: nextOffset, limit: pageLimit)
+            let response: ExploreFeedResponse
+            switch feedType {
+            case .publicExplore:
+                response = try await feedRepository.fetchPublicExploreFeed(offset: nextOffset, limit: pageLimit)
+            case .authenticated:
+                response = try await feedRepository.fetchAuthenticatedExploreFeed(offset: nextOffset, limit: pageLimit)
+            }
 
             guard !Task.isCancelled else {
                 return
