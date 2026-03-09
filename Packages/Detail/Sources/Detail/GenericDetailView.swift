@@ -14,15 +14,19 @@ struct GenericDetailView<Subtitle: View>: View {
     let title: String
     let imageUrls: [URL]
     let subtitle: Subtitle
+    let author: FeedAuthor?
     let brand: FeedBrand?
     let products: [FeedProduct]?
     let imageService: ImageService
 
+    private var hasMainImage: Bool { !imageUrls.isEmpty }
+
     @Environment(\.dismiss) private var dismiss
 
-    init(title: String, imageUrls: [URL], brand: FeedBrand? = nil, products: [FeedProduct]? = nil, imageService: ImageService, @ViewBuilder subtitle: () -> Subtitle) {
+    init(title: String, imageUrls: [URL], author: FeedAuthor? = nil, brand: FeedBrand? = nil, products: [FeedProduct]? = nil, imageService: ImageService, @ViewBuilder subtitle: () -> Subtitle) {
         self.title = title
         self.imageUrls = imageUrls
+        self.author = author
         self.brand = brand
         self.products = products
         self.imageService = imageService
@@ -41,7 +45,9 @@ struct GenericDetailView<Subtitle: View>: View {
 
                     subtitle
 
-                    if let brand {
+                    if let author {
+                        authorSection(author)
+                    } else if let brand {
                         brandSection(brand)
                     }
 
@@ -53,9 +59,10 @@ struct GenericDetailView<Subtitle: View>: View {
                         .frame(height: 100)
                 }
                 .padding(.horizontal, 16)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
-        .ignoresSafeArea()
+        .ignoresSafeArea(edges: hasMainImage ? .top : [])
         .scrollIndicators(.hidden)
         .navigationBarBackButtonHidden()
         .toolbar {
@@ -95,6 +102,38 @@ struct GenericDetailView<Subtitle: View>: View {
     }
 
     @ViewBuilder
+    private func authorSection(_ author: FeedAuthor) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Divider()
+
+            HStack(spacing: 10) {
+                if let imgUrl = author.imgUrl {
+                    PhiaAsyncImage(url: imgUrl, imageService: imageService)
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 48, height: 48)
+                        .clipShape(Circle())
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack(spacing: 4) {
+                        Text(author.name)
+                            .customFont(.Label.small)
+                            .foregroundStyle(Color.Content.primary)
+
+                        Image(.Custom.verifiedCheckmark)
+                            .resizable()
+                            .frame(width: 14, height: 14)
+                    }
+
+                    Text("\(author.handle)")
+                        .customFont(.Caption.xSmall)
+                        .foregroundStyle(Color.Foreground.secondary)
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
     private func brandSection(_ brand: FeedBrand) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Divider()
@@ -103,17 +142,9 @@ struct GenericDetailView<Subtitle: View>: View {
                 if let logoUrl = brand.logoUrl {
                     PhiaAsyncImage(url: logoUrl, imageService: imageService)
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 36, height: 36)
-                        .clipShape(RoundedRectangle(cornerRadius: 6))
-                } else {
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(Color.Background.secondary)
-                        .frame(width: 36, height: 36)
-                        .overlay {
-                            Text(String(brand.displayName.prefix(1)))
-                                .customFont(.Label.small)
-                                .foregroundStyle(Color.Foreground.secondary)
-                        }
+                        .frame(width: 48, height: 48)
+                        .background(Color.Content.primary)
+                        .clipShape(Circle())
                 }
 
                 VStack(alignment: .leading, spacing: 2) {
@@ -146,7 +177,7 @@ struct GenericDetailView<Subtitle: View>: View {
     let editorial: FeedEditorial = .primaryPreview
 
     return NavigationStack {
-        GenericDetailView(title: editorial.title, imageUrls: [editorial.imgUrl!], brand: editorial.brand, products: editorial.products, imageService: ImageService()) {
+        GenericDetailView(title: editorial.title, imageUrls: [editorial.imgUrl!], author: editorial.author, brand: editorial.brand, products: editorial.products, imageService: ImageService()) {
             Text(editorial.description!)
                 .customFont(.ParagraphEditorial.medium)
                 .foregroundStyle(Color.Foreground.secondary)

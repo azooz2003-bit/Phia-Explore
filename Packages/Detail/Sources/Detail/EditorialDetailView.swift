@@ -27,7 +27,7 @@ public struct EditorialDetailView: View {
     }
 
     public var body: some View {
-        GenericDetailView(title: editorial.title, imageUrls: imageUrls, brand: editorial.brand, products: editorial.products, imageService: imageService) {
+        GenericDetailView(title: editorial.title, imageUrls: imageUrls, author: editorial.author, brand: editorial.brand, products: editorial.products, imageService: imageService) {
             if let description = editorial.description {
                 Text(description)
                     .customFont(.ParagraphEditorial.medium)

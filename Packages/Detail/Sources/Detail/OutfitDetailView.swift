@@ -29,7 +29,7 @@ public struct OutfitDetailView: View {
     }
 
     public var body: some View {
-        GenericDetailView(title: outfit.name, imageUrls: imageUrls, brand: outfit.brand, products: outfit.products, imageService: imageService) {
+        GenericDetailView(title: outfit.name, imageUrls: imageUrls, author: outfit.author, brand: outfit.brand, products: outfit.products, imageService: imageService) {
             if let description = outfit.description {
                 Text(description)
                     .customFont(.ParagraphEditorial.medium)
