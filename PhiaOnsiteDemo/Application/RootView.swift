@@ -11,13 +11,11 @@ import Feed
 
 public struct RootView: View {
     @State var selectedTab: FeedTab = .explore
-    @State var exploreVM: FeedViewModel
-    @State var forYouVM: FeedViewModel
+    let feedRepository: FeedRepository
     let imageService: ImageService
 
     public init(feedRepository: FeedRepository, imageService: ImageService) {
-        self._exploreVM = State(initialValue: FeedViewModel(feedRepository: feedRepository, feedType: .publicExplore))
-        self._forYouVM = State(initialValue: FeedViewModel(feedRepository: feedRepository, feedType: .authenticated))
+        self.feedRepository = feedRepository
         self.imageService = imageService
     }
 
@@ -29,9 +27,9 @@ public struct RootView: View {
             Group {
                 switch selectedTab {
                 case .explore:
-                    FeedGrid(feedVM: exploreVM, imageService: imageService)
+                    FeedGrid(feedVM: FeedViewModel(feedRepository: feedRepository, feedType: .publicExplore), imageService: imageService)
                 case .forYou:
-                    FeedGrid(feedVM: forYouVM, imageService: imageService)
+                    FeedGrid(feedVM: FeedViewModel(feedRepository: feedRepository, feedType: .authenticated), imageService: imageService)
                 case .trendReport:
                     Text(selectedTab.rawValue)
                         .customFont(.Caption.medium)
