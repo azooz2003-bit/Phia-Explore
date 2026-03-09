@@ -1,8 +1,13 @@
 # Phia Onsite Demo
 
+## Bonuses
 
-### Assumptions
+- All card variants were implemented.
+- Optimized scroll masonry grid with smart image caching and image scaling (memory <= 200 MB always)
+- Handled card presentation for optional properties of different entities (e.g. UI for Product card looks good even with no primary image)
 
+
+## Assumptions
 
 #### Editorial (Primary) Card
 - For the horizontal products scroll. I assumed that each product frame should have the same width and height, while the image fills the frame.
@@ -21,6 +26,8 @@
 #### Masonry Grid
 - I use the estimated height of each feed item type as a heursitic to place the feed item into the appropriate column.
 
+## Architecture
+
 ### Masonry Grid - Architecture
 
 At first, I decided to go with the approach of an HStack of two LazyVStacks instead of the Layout protocol since I was worried that the Layout protocol computes sizes and other subview data without the subview necessarily being on screen (no lazy loading). 
@@ -33,7 +40,7 @@ The UIImage was stored in our custom async image's @State property which meant i
 
 Another problem arose, UImage's internals cache the images that were previously loaded in memory + some images were being decoded into full resolution unnecessarily. So instead of creating a UIImage directly from a Data buffer, I went down to CGImage to speicify the caching rule, and downsampling rule so that we'd only decode the image into the necessary pixel buffer for the image frame.
 
-The downsampling amount is determined by the `maxPixelSize` passed into the async images, which allows us to constrain the number of pixels in the largest edge of the image. This way we have smaller memory buffers for brand logos (like Phia), and products nested within views like Outfit or Editorial.
+The downsampling amount is determined by the `maxPixelSize` passed into the async images, which allows us to constrain the number of pixels in the largest edge of the image. This way we have smaller memory buffers for brand logos (like Phia), and products nested within views like Outfit or Editorial while the larger pixel sizes are set for images in the detail view, etc.
 
 ## TODO
 - Better toolbar button in iOS 18
