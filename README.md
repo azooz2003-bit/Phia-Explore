@@ -28,8 +28,5 @@ I decided to go with the approach of an HStack of two LazyVStacks instead of the
 The two LazyVStack approach still has a small issue though since the two lazy containers are independent of each other, and can't synchronize their height estimation, leading to a "push effect" as you scroll up where one column's contents get pushed down.
 
 ## TODO
-- User defaults bookmark tracking
 - Basic detail view with all info for each card type
 - Improve memory performance with image hide on disappear
-- Cache aspect ratio for loading state frame
-- Use fetched height in place of estimatedHeight if available for column placement.
