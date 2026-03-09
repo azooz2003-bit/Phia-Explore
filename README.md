@@ -62,6 +62,24 @@ I created `PhiaAsyncImage` since the native `AsyncImage` capabilities were too l
 
 Improvements? There are a few that I would like to make, but will not prioritize for this version of `PhiaAsyncImage`. I'd have preferred to load the images (whether from the network or disk) when their at a distance (perhaps <= 400 pts) from the visible scrolling area so that the user can save even a few hundred milliseconds of their time (it's also a much smoother UX). `onGeometryChange` was something I wanted to explore for this, but it wasn't a priority in the grander scheme of things.
 
+## Examples
+
+**High Memory**
+
+The memory footprint below was from the grid implementation before CGImage downsampling and memory cache disabling was implemented. Notice how 93 image objects are kept in memory? This was because of the internal caching done by UIImage when initialized with `Data` as opposed to `CGImage`. You can even see that an image not displayed in the simulator's masonry grid is still shown in the memory graph (Right-Click > Quick Look). This isn't even the peak, at one point the memory footprint was 700MB.
+
+<img src="./Assets/feed-grid.png" width="300">
+<img src="./Assets/93InMem.png" width="400">
+<img src="./Assets/UnusedImage.png" width="400">
+<img src="./Assets/400mb.png" width="400">
+
+**Low Memory**
+
+The examples below are from when CGImage downsampling and memory cache disabling was implemented. This is also from when the final explore feed page was fetched (after all data is loaded).
+
+<img src="./Assets/187mb.png" width="400">
+<img src="./Assets/LowMemGrid.png" width="400">
+
 
 ### Repository Pattern
 
@@ -70,10 +88,3 @@ I created a `FeedRepository` protocol type that would enable us to deliver Phia 
 With more time I would've created separate data models for the application layer (as opposed to using the `PhiaAPI` provided response payload directly). Given the scope of this project I preferred to stay simple, so using the response object -provided models made more sense.
 
 I separated the API endpoint building process into a `PhiaAPI` object, which `RemoteFeedRepository` would use to make explicit requests.
-
-<img src="./Assets/CleanShot%202026-03-09%20at%2009.52.46@2x.png" width="300">
-<img src="./Assets/CleanShot%202026-03-09%20at%2009.56.02@2x.png" width="300">
-<img src=./"Assets/93InMem.png" width="400">
-<img src="./Assets/400mb.png" width="400">
-<img src="./Assets/30InMem.png" width="400">
-<img src="./Assets/187mb.png" width="400">
