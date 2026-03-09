@@ -18,14 +18,15 @@ let package = Package(
     dependencies: [
         .package(path: "../PhiaAPI"),
         .package(path: "../DesignSystem"),
-        .package(path: "../ImageService")
+        .package(path: "../ImageService"),
+        .package(path: "../Detail"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "Feed",
-            dependencies: ["PhiaAPI", "DesignSystem", "ImageService"],
+            dependencies: ["PhiaAPI", "DesignSystem", "ImageService", "Detail"],
             swiftSettings: [
                 .defaultIsolation(MainActor.self)
             ]

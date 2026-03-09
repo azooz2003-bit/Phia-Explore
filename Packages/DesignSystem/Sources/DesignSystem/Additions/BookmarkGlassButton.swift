@@ -1,17 +1,22 @@
 //
 //  BookmarkGlassButton.swift
-//  Feed
+//  DesignSystem
 //
 //  Created by Abdulaziz Albahar on 3/4/26.
 //
 
-import DesignSystem
+import SwiftUI
 
-struct BookmarkGlassButton: View {
+public struct BookmarkGlassButton: View {
     let isBookmarked: Bool
     let action: () -> Void
 
-    var body: some View {
+    public init(isBookmarked: Bool, action: @escaping () -> Void) {
+        self.isBookmarked = isBookmarked
+        self.action = action
+    }
+
+    public var body: some View {
         Button {
             action()
         } label: {
@@ -27,16 +32,4 @@ struct BookmarkGlassButton: View {
         }
         .buttonStyle(.phiaGlass)
     }
-}
-
-#Preview("Phia Glass") {
-    RoundedRectangle(cornerRadius: 12)
-        .fill(.blue)
-        .overlay {
-            VStack {
-                BookmarkGlassButton(isBookmarked: true) {
-                    print("Pressed")
-                }
-            }
-        }
 }

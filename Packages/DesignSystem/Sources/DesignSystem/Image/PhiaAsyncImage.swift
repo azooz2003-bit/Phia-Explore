@@ -1,15 +1,14 @@
 //
 //  PhiaAsyncImage.swift
-//  Feed
+//  DesignSystem
 //
 //  Created by Abdulaziz Albahar on 3/6/26.
 //
 
 import SwiftUI
-import DesignSystem
 import ImageService
 
-struct PhiaAsyncImage: View {
+public struct PhiaAsyncImage: View {
     let url: URL
     let estimatedHeight: CGFloat?
     let imageService: ImageService
@@ -17,21 +16,28 @@ struct PhiaAsyncImage: View {
     @State var state: ImageState = .idle
     @State var cachedAspectRatio: CGFloat?
 
-    enum ImageState {
+    public enum ImageState {
         case idle
         case loading
         case loaded(UIImage)
         case failed(Error)
     }
 
-    init(url: URL, estimatedHeight: CGFloat? = nil, imageService: ImageService) {
+    public init(url: URL, estimatedHeight: CGFloat? = nil, imageService: ImageService) {
         self.url = url
         self.estimatedHeight = estimatedHeight
         self.imageService = imageService
-        self._cachedAspectRatio = State(initialValue: imageService.cachedAspectRatio(for: url))
+
+        if let cachedImage = imageService.cachedImage(for: url) {
+            self._state = State(initialValue: .loaded(cachedImage))
+            self._cachedAspectRatio = State(initialValue: nil)
+        } else {
+            self._state = State(initialValue: .idle)
+            self._cachedAspectRatio = State(initialValue: imageService.cachedAspectRatio(for: url))
+        }
     }
 
-    var body: some View {
+    public var body: some View {
         content
             .onAppear {
                 switch state {

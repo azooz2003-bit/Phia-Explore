@@ -53,6 +53,13 @@ actor DiskImageCache {
         return image
     }
 
+    nonisolated func getCachedImage(for url: URL) -> UIImage? {
+        let key = cacheKey(for: url)
+        let imagePath = cacheDirectory.appendingPathComponent(key + ".image")
+        guard let data = try? Data(contentsOf: imagePath) else { return nil }
+        return UIImage(data: data)
+    }
+
     nonisolated func getAspectRatio(for url: URL) -> CGFloat? {
         let key = cacheKey(for: url)
         let ratioPath = cacheDirectory.appendingPathComponent(key + ".ratio")

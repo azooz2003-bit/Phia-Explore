@@ -24,6 +24,10 @@ public actor ImageService {
         return diskCache?.getAspectRatio(for: url)
     }
 
+    nonisolated public func cachedImage(for url: URL) -> UIImage? {
+        return diskCache?.getCachedImage(for: url)
+    }
+
     public func fetchImage(at url: URL) async throws -> UIImage {
         if let cached = await inMemoryCache.get(at: url) {
             return cached
