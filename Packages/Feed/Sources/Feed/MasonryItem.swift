@@ -99,5 +99,17 @@ enum MasonryItem {
             }
         }
     }
-    // TODO: HANDLE ALL SECTIONs
+    // TODO: HANDLE ALL SECTIONs if there's time
+}
+
+extension MasonryItem: Identifiable {}
+
+extension MasonryItem: Hashable {
+    static func == (lhs: MasonryItem, rhs: MasonryItem) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }

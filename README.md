@@ -30,3 +30,4 @@ The two LazyVStack approach still has a small issue though since the two lazy co
 ## TODO
 - Basic detail view with all info for each card type
 - Improve memory performance with image hide on disappear
+- Better toolbar button in iOS 18

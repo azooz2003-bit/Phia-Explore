@@ -9,10 +9,13 @@ import SwiftUI
 import DesignSystem
 import PhiaAPI
 import ImageService
+import Detail
 
 public struct FeedGrid: View {
     @State var feedVM: FeedViewModel
     @State var paginationTask: Task<Void, Never>?
+    @State var selectedItem: MasonryItem?
+    @Namespace var namespace
     let imageService: ImageService
 
     public init(feedVM: FeedViewModel, imageService: ImageService) {
@@ -21,17 +24,46 @@ public struct FeedGrid: View {
     }
 
     public var body: some View {
-        ScrollView(.vertical) {
-            VStack(spacing: 6) {
-                gridContent
+        NavigationStack {
+            ScrollView(.vertical) {
+                VStack(spacing: 6) {
+                    gridContent
 
-                pageEnd
+                    pageEnd
+                }
+                .padding(.horizontal, 8)
+                .padding(.top, 6)
             }
-            .padding(.horizontal, 8)
-            .padding(.top, 6)
+            .scrollIndicators(.hidden)
+            .background(Color.Background.tertiary)
+            .navigationDestination(item: $selectedItem) { item in
+                destinationView(for: item)
+            }
         }
-        .scrollIndicators(.hidden)
-        .background(Color.Background.tertiary)
+    }
+
+    @ViewBuilder
+    func destinationView(for item: MasonryItem) -> some View {
+        switch item {
+        case .outfit(let variant):
+            switch variant {
+            case .primary(let outfit), .secondary(let outfit):
+                OutfitDetailView(outfit: outfit, imageService: imageService)
+                    .navigationTransition(.zoom(sourceID: item.id, in: namespace))
+            }
+        case .editorial(let variant):
+            switch variant {
+            case .primary(let editorial), .secondary(let editorial):
+                EditorialDetailView(editorial: editorial, imageService: imageService)
+                    .navigationTransition(.zoom(sourceID: item.id, in: namespace))
+            }
+        case .product(let variant):
+            switch variant {
+            case .primary(let product):
+                ProductDetailView(product: product, imageService: imageService)
+                    .navigationTransition(.zoom(sourceID: item.id, in: namespace))
+            }
+        }
     }
 
     @ViewBuilder
@@ -99,27 +131,33 @@ public struct FeedGrid: View {
 
     @ViewBuilder
     func card(forItem item: MasonryItem) -> some View {
-        switch item {
-        case .outfit(let variant):
-            switch variant {
-            case .primary(let outfit):
-                PrimaryOutfitCard(outfit: outfit, imageService: imageService)
-            case .secondary(let outfit):
-                SecondaryOutfitCard(outfit: outfit, imageService: imageService)
-            }
-        case .editorial(let variant):
-            switch variant {
-            case .primary(let editorial):
-                PrimaryEditorialCard(editorial: editorial, imageService: imageService)
-            case .secondary(let editorial):
-                SecondaryEditorialCard(editorial: editorial, imageService: imageService)
-            }
-        case .product(let variant):
-            switch variant {
-            case .primary(let product):
-                PrimaryProductCard(product: product, imageService: imageService)
+        Button {
+            selectedItem = item
+        } label: {
+            switch item {
+            case .outfit(let variant):
+                switch variant {
+                case .primary(let outfit):
+                    PrimaryOutfitCard(outfit: outfit, imageService: imageService)
+                case .secondary(let outfit):
+                    SecondaryOutfitCard(outfit: outfit, imageService: imageService)
+                }
+            case .editorial(let variant):
+                switch variant {
+                case .primary(let editorial):
+                    PrimaryEditorialCard(editorial: editorial, imageService: imageService)
+                case .secondary(let editorial):
+                    SecondaryEditorialCard(editorial: editorial, imageService: imageService)
+                }
+            case .product(let variant):
+                switch variant {
+                case .primary(let product):
+                    PrimaryProductCard(product: product, imageService: imageService)
+                }
             }
         }
+        .buttonStyle(.plain)
+        .matchedTransitionSource(id: item.id, in: namespace)
     }
 }
 
