@@ -28,31 +28,52 @@
 
 ## Architecture
 
+The app is split into 5 SPM packages - each providing a unique capability.
+
+- `DesignSystem`: contains all design related elements (Colors, Fonts, Images, `.xcassets`), generic components (glass background fallback for iOS 18, reusable paging indicator), and view-based extensions.
+- `PhiaAPI`: endpoint and response object representations, preview objects for feed items + other basic networking setup.
+- `ImageService`: a cache-backed image downloading service, allowing fast retrieval of images and their aspect ratios. Also handles image downsampling implicitly.
+- `Feed`: views and application-level models for the Explore and For You masonry-style feed.
+- `Detail`: detail views for the feed entities.
+
 ### Masonry Grid - Architecture
 
 At first, I decided to go with the approach of an HStack of two LazyVStacks instead of the Layout protocol since I was worried that the Layout protocol computes sizes and other subview data without the subview necessarily being on screen (no lazy loading). 
 
 But after much testing, I realized that the two LazyVStack approach still had a small issue: the two lazy containers are independent of each other, and can't synchronize their off-screen height estimation, leading to a "push and stutter effect" as you scroll up where one column's contents get pushed down. This happened quite frequently, and was very disturbing.
 
-Then I decided to try the Layout protocol approach. If I was going to go with this, I knew that the images had to be deallocated whenever they moved off the scroll view's visible content area. Because the main bottleneck in terms of performance and memory was images. Keeping everything else in memory had trivial costs in comparison. With more time I could have used techniques to simulate the LazyVStack's 'lazy loading in this custom layout.
+**Layout Protocol**
 
-The UIImage was stored in our custom async image's @State property which meant it would persist throughout the view's life. We wanted to avoid that for views off the visible area, `onDisappear` wouldn't work since it's only triggered when a view was removed from the hierarchy which wasn't the case in the `Layout` protocol implementation. Then I found `onScrollVisibilityChange`, allowing me to remove the image from the cell's state whenever its scroll visibility changed. This would ensure that only images that need to be displayed are ever rendered and kept in memory.
+Then I decided to try the Layout protocol approach. If I was going to go with this, I knew that the images had to be deallocated whenever they moved off the scroll view's visible content area. Because the main bottleneck in terms of performance and memory was images. Keeping everything else in memory had trivial costs in comparison. With more time I could have used techniques to simulate the LazyVStack's lazy loading in this custom layout.
+
+The UIImage was stored in our custom async image's `@State` property via the `loaded(UIImage)` state, meaning it would persist throughout the view's life. I wanted to avoid that for views off the visible area, `onDisappear` wouldn't work since it's only triggered when a view was removed from the hierarchy - which doesn't happen in the `Layout` protocol implementation. Then I found `onScrollVisibilityChange`, allowing me to remove the image from the cell's state whenever its visibility changed. This would ensure that only images that need to be displayed are ever rendered and kept in memory.
+
+**UIImage Inefficiency**
 
 Another problem arose, UImage's internals cache the images that were previously loaded in memory + some images were being decoded into full resolution unnecessarily. So instead of creating a UIImage directly from a Data buffer, I went down to CGImage to specify the caching rule (to avoid caching), and downsampling rule so that we'd only decode the image into the necessary pixel size for the image frame.
 
-The downsampling amount is determined by the `displayWidth` passed into the async images, which allows us to calculate the ideal pixel size to render the image in without losing quality (all while preserving memory!). This way we have smaller memory buffers for brand logos (like Phia), and products nested within views like Outfit or Editorial while the larger pixel sizes are set for images in the detail view, etc.
+The downsampling amount is determined by the `displayWidth` (an upper bound of the width we expect this image to occupy) passed into the async images, which allows us to calculate the ideal pixel size to render the image in without losing quality (all while preserving memory!). This way we have smaller memory buffers for brand logos (like Phia), and products nested within views like Outfit or Editorial while the larger pixel sizes are set for images in the detail view, etc.
+
+**Custom `PhiaAsyncImage`**
+
+I created `PhiaAsyncImage` since the native `AsyncImage` capabilities were too limited for my performance needs. `PhiaAsyncImage` works with `ImageService` to cache image aspect ratios and images themselves on disk via the system's `cacheDirectory`. From research, the OS cleans apps' `cacheDirectory` as needed, so its contents won't overwhelm the user's disk space.
+
+`PhiaAsyncImage` also handles the presentation for loading, idle, and empty states. Whenever the async image goes out of the scrolling visible area, the state is reset to `idle` to make sure that the stored image doesn't take up memory while it's not visible.
+
+Improvements? There are a few that I would like to make, but will not prioritize for this version of `PhiaAsyncImage`. I'd have preferred to load the images (whether from the network or disk) when their at a distance (perhaps <= 400 pts) from the visible scrolling area so that the user can save even a few hundred milliseconds of their time (it's also a much smoother UX). `onGeometryChange` was something I wanted to explore for this, but it wasn't a priority in the grander scheme of things.
+
 
 ### Repository Pattern
 
 I created a `FeedRepository` protocol type that would enable us to deliver Phia feed items via any mechanism (e.g. REST API, SQLite on Disk, mock repository with test data). Allowing our app's functionality to abstracted from the data source.
 
-With more time I would've created separate data models for the application layer (as opposed to using the `PhiaAPI` provided response payload directly). For simplicity, using the response object -provided models made more sense.
+With more time I would've created separate data models for the application layer (as opposed to using the `PhiaAPI` provided response payload directly). Given the scope of this project I preferred to stay simple, so using the response object -provided models made more sense.
 
-I separated the API endpoint building process into a PhiaAPI object, which `RemoteFeedRepository` would use to make explicity requests.
+I separated the API endpoint building process into a `PhiaAPI` object, which `RemoteFeedRepository` would use to make explicit requests.
 
-<img src="Assets/CleanShot%202026-03-09%20at%2009.52.46@2x.png" width="300">
-<img src="Assets/CleanShot%202026-03-09%20at%2009.56.02@2x.png" width="300">
-<img src="Assets/93InMem.png" width="400">
-<img src="Assets/400mb.png" width="400">
-<img src="Assets/30InMem.png" width="400">
-<img src="Assets/187mb.png" width="400">
+<img src="./Assets/CleanShot%202026-03-09%20at%2009.52.46@2x.png" width="300">
+<img src="./Assets/CleanShot%202026-03-09%20at%2009.56.02@2x.png" width="300">
+<img src=./"Assets/93InMem.png" width="400">
+<img src="./Assets/400mb.png" width="400">
+<img src="./Assets/30InMem.png" width="400">
+<img src="./Assets/187mb.png" width="400">
