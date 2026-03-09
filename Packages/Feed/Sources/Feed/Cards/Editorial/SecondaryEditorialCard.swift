@@ -70,7 +70,7 @@ struct SecondaryEditorialCard: View {
 
     @ViewBuilder
     func productImage(for imgUrl: URL) -> some View {
-        PhiaAsyncImage(url: imgUrl, imageService: imageService)
+        PhiaAsyncImage(url: imgUrl, displayWidth: 40, imageService: imageService)
             .aspectRatio(contentMode: .fill)
             .frame(width: 40)
             .clipShape(RoundedRectangle(cornerRadius: 4))

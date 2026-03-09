@@ -87,7 +87,7 @@ struct GenericDetailView<Subtitle: View>: View {
             ScrollView(.horizontal) {
                 LazyHStack(spacing: 0) {
                     ForEach(imageUrls.indices, id: \.self) { index in
-                        PhiaAsyncImage(url: imageUrls[index], imageService: imageService)
+                        PhiaAsyncImage(url: imageUrls[index], displayWidth: UIScreen.main.bounds.width, imageService: imageService)
                             .aspectRatio(contentMode: .fill)
                             .containerRelativeFrame(.horizontal)
                             .clipped()
@@ -108,7 +108,7 @@ struct GenericDetailView<Subtitle: View>: View {
 
             HStack(spacing: 10) {
                 if let imgUrl = author.imgUrl {
-                    PhiaAsyncImage(url: imgUrl, imageService: imageService)
+                    PhiaAsyncImage(url: imgUrl, displayWidth: 48, imageService: imageService)
                         .aspectRatio(contentMode: .fill)
                         .frame(width: 48, height: 48)
                         .clipShape(Circle())
@@ -140,7 +140,7 @@ struct GenericDetailView<Subtitle: View>: View {
 
             HStack(spacing: 10) {
                 if let logoUrl = brand.logoUrl {
-                    PhiaAsyncImage(url: logoUrl, imageService: imageService)
+                    PhiaAsyncImage(url: logoUrl, displayWidth: 48, imageService: imageService)
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 48, height: 48)
                         .background(Color.Content.primary)

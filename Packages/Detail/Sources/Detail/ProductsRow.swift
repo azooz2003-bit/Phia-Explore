@@ -37,7 +37,7 @@ struct ProductsRow: View {
     private func productCard(_ product: FeedProduct) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             if let imgUrl = product.imgUrl {
-                PhiaAsyncImage(url: imgUrl, imageService: imageService)
+                PhiaAsyncImage(url: imgUrl, displayWidth: 120, imageService: imageService)
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 120, height: 150)
                     .clipShape(RoundedRectangle(cornerRadius: 6))

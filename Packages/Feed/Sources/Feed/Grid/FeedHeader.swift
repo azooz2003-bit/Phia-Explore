@@ -58,9 +58,7 @@ public struct FeedHeader: View {
         let isSelected = selectedTab == tab
 
         return Button {
-            withAnimation(.easeInOut(duration: 0.2)) {
-                selectedTab = tab
-            }
+            selectedTab = tab
         } label: {
             Text(tab.rawValue)
                 .customFont(.Label.small)

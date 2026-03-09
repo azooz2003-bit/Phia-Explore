@@ -11,6 +11,7 @@ import ImageService
 public struct PhiaAsyncImage: View {
     let url: URL
     let estimatedHeight: CGFloat?
+    let displayWidth: CGFloat
     let imageService: ImageService
 
     @State var state: ImageState = .idle
@@ -23,30 +24,29 @@ public struct PhiaAsyncImage: View {
         case failed(Error)
     }
 
-    public init(url: URL, estimatedHeight: CGFloat? = nil, imageService: ImageService) {
+    public init(url: URL, estimatedHeight: CGFloat? = nil, displayWidth: CGFloat = 200, imageService: ImageService) {
         self.url = url
         self.estimatedHeight = estimatedHeight
+        self.displayWidth = displayWidth
         self.imageService = imageService
 
-        if let cachedImage = imageService.cachedImage(for: url) {
-            self._state = State(initialValue: .loaded(cachedImage))
-            self._cachedAspectRatio = State(initialValue: nil)
-        } else {
-            self._state = State(initialValue: .idle)
-            self._cachedAspectRatio = State(initialValue: imageService.cachedAspectRatio(for: url))
-        }
+        self._cachedAspectRatio = State(initialValue: imageService.cachedAspectRatio(for: url))
     }
 
     public var body: some View {
         content
-            .onAppear {
-                switch state {
-                case .idle, .failed:
-                    Task {
-                        await loadImage()
+            .onScrollVisibilityChange(threshold: 0.05) { isVisible in
+                if isVisible {
+                    switch state {
+                    case .idle, .failed:
+                        Task {
+                            await loadImage()
+                        }
+                    default:
+                        break
                     }
-                default:
-                    break
+                } else {
+                    state = .idle
                 }
             }
     }
@@ -80,7 +80,7 @@ public struct PhiaAsyncImage: View {
         state = .loading
 
         do {
-            let image = try await imageService.fetchImage(at: url)
+            let image = try await imageService.fetchImage(at: url, displayWidth: displayWidth)
             self.cachedAspectRatio = imageService.cachedAspectRatio(for: url)
             state = .loaded(image)
         } catch {

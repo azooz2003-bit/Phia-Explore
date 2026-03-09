@@ -68,7 +68,7 @@ struct PrimaryEditorialCard: View {
     @ViewBuilder
     func productView(_ product: FeedProduct) -> some View {
         if let imgUrl = product.imgUrl {
-            PhiaAsyncImage(url: imgUrl, estimatedHeight: nil, imageService: imageService)
+            PhiaAsyncImage(url: imgUrl, displayWidth: 123, imageService: imageService)
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 123, height: 175)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
@@ -105,7 +105,7 @@ struct PrimaryEditorialCard: View {
     var authorImage: some View {
         Group {
             if let authorImageURL = editorial.author?.imgUrl {
-                PhiaAsyncImage(url: authorImageURL, imageService: imageService)
+                PhiaAsyncImage(url: authorImageURL, displayWidth: 18, imageService: imageService)
             } else {
                 EmptyView()
             }

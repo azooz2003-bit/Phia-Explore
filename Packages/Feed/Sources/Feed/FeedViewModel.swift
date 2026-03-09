@@ -21,20 +21,8 @@ public class FeedViewModel {
     private var nextOffset: Int = 0
     private var hasMore = true
 
-    var gridLeftItems = [MasonryItem]()
-    var gridRightItems = [MasonryItem]()
+    var gridItems = [MasonryItem]()
     var error: FeedError?
-
-    var leftColumnEstHeight: CGFloat {
-        gridLeftItems.reduce(0) { res, item in
-            res + item.estimatedHeight
-        }
-    }
-    var rightColumnEstHeight: CGFloat {
-        gridRightItems.reduce(0) { res, item in
-            res + item.estimatedHeight
-        }
-    }
 
     public init(feedRepository: FeedRepository, feedType: FeedType = .publicExplore) {
         self.feedRepository = feedRepository
@@ -63,21 +51,15 @@ public class FeedViewModel {
                 return
             }
 
-            var seenIDs = Set((gridLeftItems + gridRightItems).map(\.id))
+            var seenIDs = Set(gridItems.map(\.id))
 
-            let allMasonryItems = response.sections
+            let newItems = response.sections
                 .filter { $0.componentType == .masonry }
                 .compactMap { $0.data.items }
                 .flatMap { $0.compactMap { MasonryItem(fromResponse: $0) } }
                 .filter { seenIDs.insert($0.id).inserted }
 
-            for masonryItem in allMasonryItems {
-                if leftColumnEstHeight <= rightColumnEstHeight {
-                    gridLeftItems.append(masonryItem)
-                } else {
-                    gridRightItems.append(masonryItem)
-                }
-            }
+            gridItems.append(contentsOf: newItems)
 
             self.hasMore = response.hasMore
             if let offset = response.offset {

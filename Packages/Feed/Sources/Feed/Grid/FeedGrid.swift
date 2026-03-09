@@ -68,30 +68,15 @@ public struct FeedGrid: View {
 
     @ViewBuilder
     var gridContent: some View {
-        HStack(alignment: .top, spacing: 6) {
-            LazyVStack(spacing: 6) {
-                ForEach(feedVM.gridLeftItems, id: \.id) { item in
-                    card(forItem: item)
-                        .onAppear {
-                            if item.id == feedVM.gridLeftItems.last?.id {
-                                paginate()
-                            }
+        MasonryLayout(columns: 2, spacing: 6) {
+            ForEach(feedVM.gridItems, id: \.id) { item in
+                card(forItem: item)
+                    .onScrollVisibilityChange { isVisible in
+                        if isVisible, item.id == feedVM.gridItems.last?.id {
+                            paginate()
                         }
-                }
+                    }
             }
-            .frame(maxWidth: .infinity)
-
-            LazyVStack(spacing: 6) {
-                ForEach(feedVM.gridRightItems, id: \.id) { item in
-                    card(forItem: item)
-                        .onAppear {
-                            if item.id == feedVM.gridRightItems.last?.id {
-                                paginate()
-                            }
-                        }
-                }
-            }
-            .frame(maxWidth: .infinity)
         }
     }
 
@@ -165,14 +150,12 @@ public struct FeedGrid: View {
     FontManager.registerFonts()
 
     let vm = FeedViewModel(feedRepository: RemoteFeedRepository())
-    vm.gridLeftItems = [
+    vm.gridItems = [
         .editorial(.primary(.primaryPreview)),
-        .product(.primary(.primaryPreview)),
-        .outfit(.secondary(.secondaryPreview)),
-    ]
-    vm.gridRightItems = [
         .outfit(.primary(.primaryPreview)),
+        .product(.primary(.primaryPreview)),
         .editorial(.secondary(.secondaryPreview)),
+        .outfit(.secondary(.secondaryPreview)),
         .outfit(.secondary(.secondaryPreview2)),
     ]
 
