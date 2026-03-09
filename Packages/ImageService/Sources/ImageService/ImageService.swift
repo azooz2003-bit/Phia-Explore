@@ -14,8 +14,6 @@ public actor ImageService {
     }
 
     private let diskCache: DiskImageCache?  = DiskImageCache()
-    /// an in memory cache for max 75 MB
-    private let inMemoryCache = InMemoryImageCache(maxBytes: 75 * 1024 * 1024)
     private let imageDecoder = ImageDecoder()
     private var inFlightRequests: [URL: Task<UIImage, Error>] = [:]
 
