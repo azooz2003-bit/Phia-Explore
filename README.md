@@ -25,7 +25,7 @@
 
 I decided to go with the approach of an HStack of two LazyVStacks instead of the Layout protocol since the Layout protocol computes sizes and other subview data without the subview necessarily being on screen (no lazy loading). 
 
-The two LazyVStack approach still has a small issue though since the two lazy containers are independent of each other, and can't synchronize their height estimation, leading to a "push effect" as you scroll up where one column's contents get pushed down.
+The two LazyVStack approach still has a small issue though since the two lazy containers are independent of each other, and can't synchronize their off-screen height estimation, leading to a "push and stutter effect" as you scroll up where one column's contents get pushed down.
 
 ## TODO
 - Improve memory performance with image hide on disappear

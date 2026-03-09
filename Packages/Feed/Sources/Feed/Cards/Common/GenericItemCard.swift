@@ -68,20 +68,20 @@ struct GenericItemCard<Subtitle: View>: View {
 
     @ViewBuilder
     func catalogScrollView(for imageUrls: [URL]) -> some View {
-            ScrollView(.horizontal) {
-                LazyHStack(spacing: 0) {
-                    ForEach(imageUrls.enumerated().map(\.self), id: \.0) { (i, imgUrl) in
-                        imageView(for: imgUrl)
-                        .id(i)
-                    }
+        ScrollView(.horizontal) {
+            LazyHStack(spacing: 0) {
+                ForEach(imageUrls.enumerated().map(\.self), id: \.0) { (i, imgUrl) in
+                    imageView(for: imgUrl)
+                    .id(i)
                 }
-                .fixedSize(horizontal: false, vertical: true)
-                .scrollTargetLayout()
             }
-            .scrollTargetBehavior(.viewAligned)
-            .scrollIndicators(.hidden)
-            .scrollPosition(id: $currentPage)
-            .scrollDisabled(imageUrls.count == 1)
+            .fixedSize(horizontal: false, vertical: true)
+            .scrollTargetLayout()
+        }
+        .scrollTargetBehavior(.viewAligned)
+        .scrollIndicators(.hidden)
+        .scrollPosition(id: $currentPage)
+        .scrollDisabled(imageUrls.count == 1)
     }
 
     @ViewBuilder

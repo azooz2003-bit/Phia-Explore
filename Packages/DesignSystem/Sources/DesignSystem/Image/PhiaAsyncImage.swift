@@ -60,8 +60,9 @@ public struct PhiaAsyncImage: View {
                     .aspectRatio(cachedAspectRatio, contentMode: .fill)
                     .overlay { ProgressView() }
             } else {
-                ProgressView()
+                Color.clear
                     .frame(height: estimatedHeight)
+                    .overlay { ProgressView() }
             }
         case .loaded(let uiImage):
             Image(uiImage: uiImage)
@@ -80,6 +81,7 @@ public struct PhiaAsyncImage: View {
 
         do {
             let image = try await imageService.fetchImage(at: url)
+            self.cachedAspectRatio = imageService.cachedAspectRatio(for: url)
             state = .loaded(image)
         } catch {
             state = .failed(error)
