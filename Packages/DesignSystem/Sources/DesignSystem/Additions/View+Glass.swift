@@ -23,6 +23,16 @@ public extension View {
         self
             .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
     }
+
+    @ViewBuilder
+    func phiaGlassPre26() -> some View {
+        if #available(iOS 26.0, *) {
+            self
+        } else {
+            self
+                .phiaGlassFallback()
+        }
+    }
 }
 
 public struct PhiaGlassButtonStyle: PrimitiveButtonStyle {

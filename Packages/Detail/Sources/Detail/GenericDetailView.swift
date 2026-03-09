@@ -74,6 +74,7 @@ struct GenericDetailView<Subtitle: View>: View {
                         .fontWeight(.semibold)
                         .foregroundStyle(Color.Content.primary)
                         .frame(width: 44, height: 44)
+                        .phiaGlassPre26()
                 }
                 Spacer()
             }
