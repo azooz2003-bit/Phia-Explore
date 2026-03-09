@@ -60,7 +60,13 @@ I created `PhiaAsyncImage` since the native `AsyncImage` capabilities were too l
 
 `PhiaAsyncImage` also handles the presentation for loading, idle, and empty states. Whenever the async image goes out of the scrolling visible area, the state is reset to `idle` to make sure that the stored image doesn't take up memory while it's not visible.
 
-Improvements? There are a few that I would like to make, but will not prioritize for this version of `PhiaAsyncImage`. I'd have preferred to load the images (whether from the network or disk) when their at a distance (perhaps <= 400 pts) from the visible scrolling area so that the user can save even a few hundred milliseconds of their time (it's also a much smoother UX). `onGeometryChange` was something I wanted to explore for this, but it wasn't a priority in the grander scheme of things.
+Improvements? 
+
+There are a few that I would like to make, but will not prioritize for this version of `PhiaAsyncImage`. I'd have preferred to load the images (whether from the network or disk) when their at a distance (perhaps <= 400 pts) from the visible scrolling area so that the user can save even a few hundred milliseconds of their time (it's also a much smoother UX). `onGeometryChange` was something I wanted to explore for this, but it wasn't a priority in the grander scheme of things.
+
+Before displaying the cards I could have downloaded each image, collected its aspect ratio, then displayed the cards so that the user immediately sees the correct card sizing, however the user would have to wait seconds before seeing any items. The current strategy servers the users interests better per my judgment.
+
+ The Explore API also doesn't provide metadata about the image's size. I'm not sure why the backend doesn't do this - I'd assume due to some computational cost - but if the backend pre-processes every Outfit / Editorial / Product image that's uploaded to it by Phia editors or other brand editors (to extract the aspect ratio) then this would no longer be a tradeoff we have to make.
 
 ## Examples
 
