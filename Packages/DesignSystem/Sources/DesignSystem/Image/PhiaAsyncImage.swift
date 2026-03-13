@@ -58,11 +58,9 @@ public struct PhiaAsyncImage: View {
             if let cachedAspectRatio {
                 Color.clear
                     .aspectRatio(cachedAspectRatio, contentMode: .fill)
-                    .overlay { ProgressView() }
             } else {
                 Color.clear
                     .frame(height: estimatedHeight)
-                    .overlay { ProgressView() }
             }
         case .loaded(let uiImage):
             Image(uiImage: uiImage)
