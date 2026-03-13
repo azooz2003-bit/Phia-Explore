@@ -7,25 +7,39 @@
 
 import SwiftUI
 import PhiaAPI
+import ImageService
 
 @Observable
 public class FeedViewModel {
+    public struct MasonryChunk: Identifiable {
+        public let id: String
+        public let items: [MasonryItem]
+        public let aspectRatios: [String: CGFloat]
+    }
+
     public enum FeedType {
         case publicExplore
         case authenticated
     }
 
     private let feedRepository: FeedRepository
+    private let imageService: ImageService
     private let feedType: FeedType
     private let pageLimit = 60
     private var nextOffset: Int = 0
     private var hasMore = true
+    private var seenIDs = Set<String>()
 
-    var gridItems = [MasonryItem]()
+    var gridChunks = [MasonryChunk]()
     var error: FeedError?
 
-    public init(feedRepository: FeedRepository, feedType: FeedType = .publicExplore) {
+    var lastItemID: String? {
+        gridChunks.last?.items.last?.id
+    }
+
+    public init(feedRepository: FeedRepository, imageService: ImageService, feedType: FeedType = .publicExplore) {
         self.feedRepository = feedRepository
+        self.imageService = imageService
         self.feedType = feedType
     }
 
@@ -51,15 +65,24 @@ public class FeedViewModel {
                 return
             }
 
-            var seenIDs = Set(gridItems.map(\.id))
-
             let newItems = response.sections
                 .filter { $0.componentType == .masonry }
                 .compactMap { $0.data.items }
                 .flatMap { $0.compactMap { MasonryItem(fromResponse: $0) } }
                 .filter { seenIDs.insert($0.id).inserted }
 
-            gridItems.append(contentsOf: newItems)
+            guard !newItems.isEmpty else {
+                self.hasMore = response.hasMore
+                if let offset = response.offset {
+                    self.nextOffset = offset
+                }
+                return
+            }
+
+            let aspectRatios = await prefetchAspectRatios(for: newItems)
+
+            let newChunk = MasonryChunk(id: "chunk-\(gridChunks.count)", items: newItems, aspectRatios: aspectRatios)
+            gridChunks.append(newChunk)
 
             self.hasMore = response.hasMore
             if let offset = response.offset {
@@ -70,6 +93,27 @@ public class FeedViewModel {
             self.error = .apiFailure(error)
         } catch {
             self.error = .unknown(error)
+        }
+    }
+
+    private func prefetchAspectRatios(for items: [MasonryItem]) async -> [String: CGFloat] {
+        await withTaskGroup(of: (String, CGFloat?).self) { group in
+            for item in items {
+                guard let url = item.primaryImageURL else { continue }
+                let id = item.id
+                group.addTask {
+                    let ratio = await self.imageService.prefetchAspectRatio(for: url)
+                    return (id, ratio)
+                }
+            }
+
+            var result = [String: CGFloat]()
+            for await (id, ratio) in group {
+                if let ratio {
+                    result[id] = ratio
+                }
+            }
+            return result
         }
     }
 }

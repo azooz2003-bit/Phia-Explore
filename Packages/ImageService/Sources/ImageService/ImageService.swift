@@ -16,11 +16,39 @@ public actor ImageService {
     private let diskCache: DiskImageCache?  = DiskImageCache()
     private let imageDecoder = ImageDecoder()
     private var inFlightRequests: [URL: Task<UIImage, Error>] = [:]
+    private var inFlightPrefetches: [URL: Task<CGFloat?, Error>] = [:]
 
     public init() {}
 
     nonisolated public func cachedAspectRatio(for url: URL) -> CGFloat? {
         return diskCache?.getAspectRatio(for: url)
+    }
+
+    public func prefetchAspectRatio(for url: URL) async -> CGFloat? {
+        if let cached = diskCache?.getAspectRatio(for: url) {
+            return cached
+        }
+
+        if let existing = inFlightPrefetches[url] {
+            return try? await existing.value
+        }
+
+        if let existing = inFlightRequests[url] {
+            let image = try? await existing.value
+            return image.map { $0.size.width / $0.size.height }
+        }
+
+        let task = Task<CGFloat?, Error> {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            await diskCache?.set(data, for: url)
+            return diskCache?.getAspectRatio(for: url)
+        }
+
+        inFlightPrefetches[url] = task
+
+        let result = try? await task.value
+        inFlightPrefetches.removeValue(forKey: url)
+        return result
     }
 
     public func fetchImage(at url: URL, displayWidth: CGFloat = 200) async throws -> UIImage {

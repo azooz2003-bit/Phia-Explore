@@ -75,7 +75,6 @@ struct GenericItemCard<Subtitle: View>: View {
                     .id(i)
                 }
             }
-            .fixedSize(horizontal: false, vertical: true)
             .scrollTargetLayout()
         }
         .scrollTargetBehavior(.viewAligned)

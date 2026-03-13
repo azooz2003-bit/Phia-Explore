@@ -8,22 +8,26 @@
 import Foundation
 import PhiaAPI
 
-enum MasonryItem {
-    enum OutfitVariant {
-        case primary(FeedOutfit), secondary(FeedOutfit)
+public enum MasonryItem {
+    public enum OutfitVariant {
+        case primary(FeedOutfit)
+        case secondary(FeedOutfit)
     }
 
-    enum EditorialVariant {
-        case primary(FeedEditorial), secondary(FeedEditorial)
+    public enum EditorialVariant {
+        case primary(FeedEditorial)
+        case secondary(FeedEditorial)
     }
 
-    enum ProductVariant {
+    public enum ProductVariant {
         case primary(FeedProduct)
     }
 
-    case outfit(OutfitVariant), editorial(EditorialVariant), product(ProductVariant)
+    case outfit(OutfitVariant)
+    case editorial(EditorialVariant)
+    case product(ProductVariant)
 
-    var id: String {
+    public var id: String {
         switch self {
         case .outfit(let outfitVariant):
             switch outfitVariant {
@@ -42,27 +46,43 @@ enum MasonryItem {
             }
         }
     }
-    
-    var estimatedHeight: CGFloat {
+
+    public var primaryImageURL: URL? {
         switch self {
-        case .outfit(let outfitVariant):
-            switch outfitVariant {
-            case .primary:
-                PrimaryOutfitCard.estimatedHeight
-            case .secondary:
-                SecondaryOutfitCard.estimatedHeight
+        case .outfit(let variant):
+            switch variant {
+            case .primary(let outfit), .secondary(let outfit):
+                outfit.imgUrl
             }
-        case .editorial(let editorialVariant):
-            switch editorialVariant {
-            case .primary:
-                PrimaryEditorialCard.estimatedHeight
-            case .secondary:
-                SecondaryEditorialCard.estimatedHeight
+        case .editorial(let variant):
+            switch variant {
+            case .primary(let editorial), .secondary(let editorial):
+                editorial.imgUrl
             }
-        case .product(let productVariant):
-            switch productVariant {
-            case .primary:
-                PrimaryProductCard.estimatedHeight
+        case .product(let variant):
+            switch variant {
+            case .primary(let product):
+                product.imgUrl
+            }
+        }
+    }
+
+    public var hasExpandableImage: Bool {
+        switch self {
+        case .outfit(let variant):
+            switch variant {
+            case .primary(let outfit), .secondary(let outfit):
+                return outfit.imgUrl != nil || !(outfit.products?.compactMap(\.imgUrl).isEmpty ?? true)
+            }
+        case .editorial(let variant):
+            switch variant {
+            case .primary(let editorial), .secondary(let editorial):
+                return editorial.imgUrl != nil || !(editorial.products?.compactMap(\.imgUrl).isEmpty ?? true)
+            }
+        case .product(let variant):
+            switch variant {
+            case .primary(let product):
+                return product.imgUrl != nil
             }
         }
     }
@@ -105,11 +125,11 @@ enum MasonryItem {
 extension MasonryItem: Identifiable {}
 
 extension MasonryItem: Hashable {
-    static func == (lhs: MasonryItem, rhs: MasonryItem) -> Bool {
+    public static func == (lhs: MasonryItem, rhs: MasonryItem) -> Bool {
         lhs.id == rhs.id
     }
 
-    func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
 }

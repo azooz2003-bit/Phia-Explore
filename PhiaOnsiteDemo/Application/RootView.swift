@@ -27,9 +27,9 @@ public struct RootView: View {
             Group {
                 switch selectedTab {
                 case .explore:
-                    FeedGrid(feedVM: FeedViewModel(feedRepository: feedRepository, feedType: .publicExplore), imageService: imageService)
+                    FeedGrid(feedVM: FeedViewModel(feedRepository: feedRepository, imageService: imageService, feedType: .publicExplore), imageService: imageService)
                 case .forYou:
-                    FeedGrid(feedVM: FeedViewModel(feedRepository: feedRepository, feedType: .authenticated), imageService: imageService)
+                    FeedGrid(feedVM: FeedViewModel(feedRepository: feedRepository, imageService: imageService, feedType: .authenticated), imageService: imageService)
                 case .trendReport:
                     Text(selectedTab.rawValue)
                         .customFont(.Caption.medium)

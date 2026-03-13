@@ -44,8 +44,14 @@ struct PrimaryEditorialCard: View {
     @ViewBuilder
     var primaryImage: some View {
         if let imgUrl = editorial.imgUrl {
-            PhiaAsyncImage(url: imgUrl, estimatedHeight: Self.estimatedPrimaryImageHeight, imageService: imageService)
-                .aspectRatio(contentMode: .fit)
+            Color.clear
+                .frame(minHeight: Self.estimatedPrimaryImageHeight, maxHeight: .infinity)
+                .overlay {
+                    PhiaAsyncImage(url: imgUrl, estimatedHeight: Self.estimatedPrimaryImageHeight, imageService: imageService)
+                        .aspectRatio(contentMode: .fill)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+                .clipped()
                 .clipShape(RoundedRectangle(cornerRadius: 6))
         }
     }

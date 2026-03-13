@@ -35,7 +35,6 @@ struct SecondaryEditorialCard: View {
     var visualContent: some View {
         HStack(spacing: 4) {
             primaryImage(for: imageUrls.first)
-                .fixedSize(horizontal: false, vertical: true)
 
             VStack(spacing: 4) {
                 let productImageUrls = Array(imageUrls.dropFirst().prefix(3))
@@ -54,17 +53,21 @@ struct SecondaryEditorialCard: View {
                 }
             }
         }
-        .fixedSize(horizontal: false, vertical: true)
         .padding([.leading, .trailing, .top], 4)
     }
 
     @ViewBuilder
     func primaryImage(for imgUrl: URL?) -> some View {
         if let imgUrl {
-            PhiaAsyncImage(url: imgUrl, estimatedHeight: Self.estimatedPrimaryImageHeight, imageService: imageService)
-                .aspectRatio(contentMode: .fit)
+            Color.clear
+                .frame(minHeight: Self.estimatedPrimaryImageHeight, maxHeight: .infinity)
+                .overlay {
+                    PhiaAsyncImage(url: imgUrl, estimatedHeight: Self.estimatedPrimaryImageHeight, imageService: imageService)
+                        .aspectRatio(contentMode: .fill)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+                .clipped()
                 .clipShape(RoundedRectangle(cornerRadius: 6))
-                .frame(maxWidth: .infinity)
         }
     }
 

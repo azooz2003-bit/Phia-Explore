@@ -68,14 +68,18 @@ public struct FeedGrid: View {
 
     @ViewBuilder
     var gridContent: some View {
-        MasonryLayout(columns: 2, spacing: 6) {
-            ForEach(feedVM.gridItems, id: \.id) { item in
-                card(forItem: item)
-                    .onScrollVisibilityChange { isVisible in
-                        if isVisible, item.id == feedVM.gridItems.last?.id {
-                            paginate()
-                        }
+        LazyVStack(spacing: 6) {
+            ForEach(feedVM.gridChunks) { chunk in
+                MasonryLayout(columns: 2, spacing: 6) {
+                    ForEach(chunk.items, id: \.id) { item in
+                        card(forItem: item, aspectRatio: chunk.aspectRatios[item.id])
+                            .onScrollVisibilityChange { isVisible in
+                                if isVisible, item.id == feedVM.lastItemID {
+                                    paginate()
+                                }
+                            }
                     }
+                }
             }
         }
     }
@@ -114,8 +118,28 @@ public struct FeedGrid: View {
         }
     }
 
+    func calculateImageFrameHeight(for item: MasonryItem, aspectRatio: CGFloat?) -> CGFloat? {
+        guard let aspectRatio, aspectRatio > 0 else { return nil }
+
+        let totalWidth = UIScreen.main.bounds.width - 16
+        let columnWidth = (totalWidth - 6) / 2
+
+        switch item {
+        case .editorial(.primary):
+            return columnWidth / aspectRatio
+        case .editorial(.secondary):
+            let imageWidth = columnWidth - 40 - 4
+            return imageWidth / aspectRatio
+        case .outfit, .product:
+            return columnWidth / aspectRatio
+        }
+    }
+
     @ViewBuilder
-    func card(forItem item: MasonryItem) -> some View {
+    func card(forItem item: MasonryItem, aspectRatio: CGFloat?) -> some View {
+        let imageFrameHeight = calculateImageFrameHeight(for: item, aspectRatio: aspectRatio)
+        let estimatedImageHeight = getEstimatedImageHeight(for: item)
+
         Button {
             selectedItem = item
         } label: {
@@ -142,23 +166,46 @@ public struct FeedGrid: View {
             }
         }
         .buttonStyle(.plain)
+        .canExpandVertically(item.hasExpandableImage)
+        .primaryImageFrameHeight(imageFrameHeight)
+        .estimatedImageHeight(estimatedImageHeight)
         .matchedTransitionSource(id: item.id, in: namespace)
+    }
+
+    func getEstimatedImageHeight(for item: MasonryItem) -> CGFloat? {
+        guard item.hasExpandableImage else { return nil }
+
+        switch item {
+        case .editorial(.primary):
+            return 178
+        case .editorial(.secondary):
+            return 241
+        case .outfit(.primary):
+            return 380
+        case .outfit(.secondary):
+            return 238
+        case .product(.primary):
+            return 270
+        }
     }
 }
 
 #Preview {
     FontManager.registerFonts()
 
-    let vm = FeedViewModel(feedRepository: RemoteFeedRepository())
-    vm.gridItems = [
-        .editorial(.primary(.primaryPreview)),
-        .outfit(.primary(.primaryPreview)),
-        .product(.primary(.primaryPreview)),
-        .editorial(.secondary(.secondaryPreview)),
-        .outfit(.secondary(.secondaryPreview)),
-        .outfit(.secondary(.secondaryPreview2)),
+    let imageService = ImageService()
+    let vm = FeedViewModel(feedRepository: RemoteFeedRepository(), imageService: imageService)
+    vm.gridChunks = [
+        FeedViewModel.MasonryChunk(id: "preview", items: [
+            .editorial(.primary(.primaryPreview)),
+            .outfit(.primary(.primaryPreview)),
+            .product(.primary(.primaryPreview)),
+            .editorial(.secondary(.secondaryPreview)),
+            .outfit(.secondary(.secondaryPreview)),
+            .outfit(.secondary(.secondaryPreview2)),
+        ], aspectRatios: [:])
     ]
 
-    return FeedGrid(feedVM: vm, imageService: ImageService())
+    return FeedGrid(feedVM: vm, imageService: imageService)
         .background(Color.Background.tertiary)
 }

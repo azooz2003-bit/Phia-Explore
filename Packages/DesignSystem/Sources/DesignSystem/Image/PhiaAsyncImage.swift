@@ -45,8 +45,6 @@ public struct PhiaAsyncImage: View {
                     default:
                         break
                     }
-                } else {
-                    state = .idle
                 }
             }
     }
