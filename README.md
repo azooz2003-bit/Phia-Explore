@@ -3,7 +3,7 @@
 ## Bonuses
 
 - All card variants were implemented.
-- Optimized scroll masonry grid with smart image caching and image scaling (memory <= 200 MB always)
+- Optimized scroll masonry grid by: lazy loading height-balanced batches of cards, smart image caching and image scaling (memory <= 200 MB always)
 - Handled card presentation for optional properties of different entities (e.g. UI for Product card looks good even with no primary image)
 
 
@@ -22,9 +22,6 @@
 
 #### Editorial (Secondary) Card
 - The 3 product images on the right side are equal height (dynamic based on primary editorial image) but fixed width.
-
-#### Masonry Grid
-- On first-ever load, I use the estimated height of each feed item type as a heuristic to place the feed item into the appropriate column. For subsequent loads, I use a cached aspect ratio value derived from the disk.
 
 ## Architecture
 
@@ -56,9 +53,17 @@ This column equality operation would happen in batches. A page of masonry cards 
 
 To perform the size checking properly, we have to prefetch all the dynamic-height-influencing images of the cards (in essence, just the primary cards) and save their aspect ratios. With layout value keys, we'd pass that info the masonry layout so that it can factor the real size of the card in its computation and decisino process. Even when done in parallel, the speed of image fetching was faster than I expected, the page loading didn't feel any different in terms of latency.
 
+### Repository Pattern
+
+I created a `FeedRepository` protocol type that would enable us to deliver Phia feed items via any mechanism (e.g. REST API, SQLite on Disk, mock repository with test data). Allowing our app's functionality to abstracted from the data source.
+
+With more time I would've created separate data models for the application layer (as opposed to using the `PhiaAPI` provided response payload directly). Given the scope of this project I preferred to stay simple, so using the response object -provided models made more sense.
+
+I separated the API endpoint building process into a `PhiaAPI` object, which `RemoteFeedRepository` would use to make explicit requests.
+
 **UIImage Inefficiency**
 
-Another problem arose, UImage's internals cache the images that were previously loaded in memory + some images were being decoded into full resolution unnecessarily. So instead of creating a UIImage directly from a Data buffer, I went down to CGImage to specify the caching rule (to avoid caching), and downsampling rule so that we'd only decode the image into the necessary pixel size for the image frame.
+This was a trivial problem in comparison to the aforementioned, but UImage's internals cache the images that were previously loaded in memory + some images were being decoded into full resolution unnecessarily. So instead of creating a UIImage directly from a Data buffer, I went down to CGImage to specify the caching rule (to avoid caching), and downsampling rule so that we'd only decode the image into the necessary pixel size for the image frame.
 
 The downsampling amount is determined by the `displayWidth` (an upper bound of the width we expect this image to occupy) passed into the async images, which allows us to calculate the ideal pixel size to render the image in without losing quality (all while preserving memory!). This way we have smaller memory buffers for brand logos (like Phia), and products nested within views like Outfit or Editorial while the larger pixel sizes are set for images in the detail view, etc.
 
@@ -70,11 +75,7 @@ I created `PhiaAsyncImage` since the native `AsyncImage` capabilities were too l
 
 Improvements? 
 
-There are a few that I would like to make, but will not prioritize for this version of `PhiaAsyncImage`. I'd have preferred to load the images (whether from the network or disk) when their at a distance (perhaps <= 400 pts) from the visible scrolling area so that the user can save even a few hundred milliseconds of their time (it's also a much smoother UX). `onGeometryChange` was something I wanted to explore for this, but it wasn't a priority in the grander scheme of things.
-
-Before displaying the cards I could have downloaded each image, collected its aspect ratio, then displayed the cards so that the user immediately sees the correct card sizing, however the user would have to wait seconds before seeing any items. The current strategy servers the users interests better per my judgment.
-
- The Explore API also doesn't provide metadata about the image's size. I'm not sure why the backend doesn't do this - I'd assume due to some computational cost - but if the backend pre-processes every Outfit / Editorial / Product image that's uploaded to it by Phia editors or other brand editors (to extract the aspect ratio) then this would no longer be a tradeoff we have to make.
+The Explore API also doesn't provide metadata about the image's size. I'm not sure why the backend doesn't do this - I'd assume due to some computational cost - but if the backend pre-processes every Outfit / Editorial / Product image that's uploaded to it by Phia editors or other brand editors (to extract the aspect ratio) then latency would improve by a lot since we dont need to spend any time preprocessing images for their aspect ratios.
 
 ## Memory Examples
 
@@ -93,12 +94,3 @@ The examples below are from when CGImage downsampling and memory cache disabling
 
 <img src="./Assets/187mb.png" width="400">
 <img src="./Assets/LowMemGrid.png" width="400">
-
-
-### Repository Pattern
-
-I created a `FeedRepository` protocol type that would enable us to deliver Phia feed items via any mechanism (e.g. REST API, SQLite on Disk, mock repository with test data). Allowing our app's functionality to abstracted from the data source.
-
-With more time I would've created separate data models for the application layer (as opposed to using the `PhiaAPI` provided response payload directly). Given the scope of this project I preferred to stay simple, so using the response object -provided models made more sense.
-
-I separated the API endpoint building process into a `PhiaAPI` object, which `RemoteFeedRepository` would use to make explicit requests.
