@@ -98,7 +98,7 @@ struct GenericDetailView<Subtitle: View>: View {
             }
             .scrollTargetBehavior(.paging)
             .scrollIndicators(.hidden)
-            .frame(minHeight: 400)
+            .frame(minHeight: 100)
         }
     }
 

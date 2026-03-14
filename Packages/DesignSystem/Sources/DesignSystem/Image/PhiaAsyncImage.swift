@@ -35,6 +35,13 @@ public struct PhiaAsyncImage: View {
 
     public var body: some View {
         content
+            .onAppear {
+                if case .idle = state {
+                    Task {
+                        await loadImage()
+                    }
+                }
+            }
             .onScrollVisibilityChange(threshold: 0.05) { isVisible in
                 if isVisible {
                     switch state {
