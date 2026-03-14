@@ -17,6 +17,7 @@ public enum FeedTab: String, CaseIterable {
 
 public struct FeedHeader: View {
     @Binding var selectedTab: FeedTab
+    @AppStorage("debugDataMultiplier") private var dataMultiplier: Int = 1
     let imageService: ImageService
 
     public init(selectedTab: Binding<FeedTab>, imageService: ImageService) {
@@ -28,6 +29,13 @@ public struct FeedHeader: View {
         VStack(spacing: 0) {
             Menu {
                 Section("Debug Menu") {
+                    Picker("Page Multiplier", selection: $dataMultiplier) {
+                        Text("1x (Default)").tag(1)
+                        Text("3x").tag(3)
+                        Text("5x").tag(5)
+                        Text("10x").tag(10)
+                    }
+
                     Button("Clear Cache", role: .destructive) {
                         Task {
                             await imageService.clearCache()

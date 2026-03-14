@@ -85,8 +85,14 @@ public class FeedViewModel {
 
             let aspectRatios = await prefetchAspectRatios(for: newItems)
 
-            let newChunk = MasonryChunk(id: "chunk-\(gridChunks.count)", items: newItems, aspectRatios: aspectRatios)
-            gridChunks.append(newChunk)
+            let multiplier = max(UserDefaults.standard.integer(forKey: "debugDataMultiplier"), 1)
+            for copy in 0..<multiplier {
+                let chunkId = "chunk-\(gridChunks.count)"
+                gridChunks.append(MasonryChunk(id: chunkId, items: newItems, aspectRatios: aspectRatios))
+                if copy == 0 {
+                    print("[Debug] Page loaded: \(newItems.count) items × \(multiplier) copies")
+                }
+            }
 
             self.hasMore = response.hasMore
             if let offset = response.offset {
