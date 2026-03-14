@@ -101,26 +101,40 @@ public class FeedViewModel {
     }
 
     private func prefetchAspectRatios(for items: [MasonryItem]) async -> [String: CGFloat] {
-        await withTaskGroup(of: (String, CGFloat?).self) { group in
-            for item in items {
-                guard let url = item.primaryImageURL else {
-                    print("\(item.cardName): primaryImageURL is nil")
-                    continue
-                }
-                let id = item.id
+        let prefetchItems = items.compactMap { item in
+            guard let url = item.primaryImageURL else {
+                print("\(item.cardName): primaryImageURL is nil")
+                return nil as (String, URL)?
+            }
+            return (item.id, url) as (String, URL)?
+        }
+
+        return await withTaskGroup(of: (String, CGFloat?).self) { group in
+            let maxConcurrent = 6
+            var index = 0
+
+            while index < min(maxConcurrent, prefetchItems.count) {
+                let (id, url) = prefetchItems[index]
                 group.addTask {
                     let ratio = await self.imageService.prefetchAspectRatio(for: url)
-                    if ratio == nil {
-                        print("\(await item.cardName): prefetch returned nil for \(url)")
-                    }
                     return (id, ratio)
                 }
+                index += 1
             }
 
             var result = [String: CGFloat]()
             for await (id, ratio) in group {
                 if let ratio {
                     result[id] = ratio
+                }
+
+                if index < prefetchItems.count {
+                    let (id, url) = prefetchItems[index]
+                    group.addTask {
+                        let ratio = await self.imageService.prefetchAspectRatio(for: url)
+                        return (id, ratio)
+                    }
+                    index += 1
                 }
             }
             return result
