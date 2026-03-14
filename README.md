@@ -81,16 +81,20 @@ The Explore API also doesn't provide metadata about the image's size. I'm not su
 
 **High Memory**
 
-The memory footprint below was from the grid implementation before CGImage downsampling and memory cache disabling was implemented. Notice how 93 image objects are kept in memory? This was because of the internal caching done by UIImage when initialized with `Data` as opposed to `CGImage`. You can even see that an image not displayed in the simulator's masonry grid is still shown in the memory graph (Right-Click > Quick Look). This isn't even the peak, at one point the memory footprint was 700MB.
+The memory footprint below was from the grid implementation before CGImage downsampling and memory cache disabling was implemented. Measured right after the first page was loaded. Notice how 93 image objects are kept in memory? This was because of the internal caching done by UIImage when initialized with `Data` as opposed to `CGImage`. You can even see that an image not displayed in the simulator's masonry grid is still shown in the memory graph (Right-Click > Quick Look).
 
-<img src="./Assets/feed-grid.png" width="300">
-<img src="./Assets/93InMem.png" width="400">
-<img src="./Assets/UnusedImage.png" width="400">
-<img src="./Assets/400mb.png" width="400">
+<p align="center">
+    <img src="./Assets/Xcode/feed_grid.png" width="300">
+    <img src="./Assets/93InMem.png" width="400">
+    <img src="./Assets/UnusedImage.png" width="400">
+    <img src="./Assets/Xcode/NoOpt_267.png" width="400">
+</p>
 
 **Low Memory**
 
-The examples below are from when CGImage downsampling and memory cache disabling was implemented. This is also from when the final explore feed page was fetched (after all data is loaded).
+The two examples below are from when CGImage downsampling and memory cache disabling was implemented. This is also from when the first page was fetched.
 
-<img src="./Assets/187mb.png" width="400">
-<img src="./Assets/LowMemGrid.png" width="400">
+<p align="center">
+    <img src="./Assets/Xcode/Opt_93.png" width="400">
+    <img src="./Assets/Xcode/Opt_70.png" width="400">
+</p>
