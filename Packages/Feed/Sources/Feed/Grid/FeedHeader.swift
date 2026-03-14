@@ -7,6 +7,7 @@
 
 import SwiftUI
 import DesignSystem
+import ImageService
 
 public enum FeedTab: String, CaseIterable {
     case explore = "Explore"
@@ -16,19 +17,31 @@ public enum FeedTab: String, CaseIterable {
 
 public struct FeedHeader: View {
     @Binding var selectedTab: FeedTab
+    let imageService: ImageService
 
-    public init(selectedTab: Binding<FeedTab>) {
+    public init(selectedTab: Binding<FeedTab>, imageService: ImageService) {
         self._selectedTab = selectedTab
+        self.imageService = imageService
     }
 
     public var body: some View {
         VStack(spacing: 0) {
-            Image(.Custom.logoWhite)
-                .renderingMode(.template)
-                .foregroundStyle(Color.Foreground.primary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 16)
-                .padding(.bottom, 12)
+            Menu {
+                Section("Debug Menu") {
+                    Button("Clear Cache", role: .destructive) {
+                        Task {
+                            await imageService.clearCache()
+                        }
+                    }
+                }
+            } label: {
+                Image(.Custom.logoWhite)
+                    .renderingMode(.template)
+                    .foregroundStyle(Color.Foreground.primary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 12)
 
             HStack(alignment: .center, spacing: 0) {
                 HStack(spacing: 0) {
@@ -77,5 +90,5 @@ public struct FeedHeader: View {
 #Preview {
     FontManager.registerFonts()
 
-    return FeedHeader(selectedTab: .constant(.explore))
+    return FeedHeader(selectedTab: .constant(.explore), imageService: ImageService())
 }

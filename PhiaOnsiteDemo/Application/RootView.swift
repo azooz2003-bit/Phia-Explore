@@ -21,7 +21,7 @@ public struct RootView: View {
 
     public var body: some View {
         VStack(spacing: 0) {
-            FeedHeader(selectedTab: $selectedTab)
+            FeedHeader(selectedTab: $selectedTab, imageService: imageService)
                 .padding(.top, 12)
 
             Group {
