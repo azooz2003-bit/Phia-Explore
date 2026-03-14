@@ -33,14 +33,11 @@ struct ImageDecoder {
         guard let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as NSDictionary?,
               let originalWidth = properties[kCGImagePropertyPixelWidth] as? CGFloat,
               let originalHeight = properties[kCGImagePropertyPixelHeight] as? CGFloat,
-              originalWidth > 0 else {
+              originalWidth > 0, originalHeight > 0 else {
             return Int(widthInPx)
         }
 
-        if originalHeight > originalWidth {
-            return Int(widthInPx * originalHeight / originalWidth)
-        } else {
-            return Int(widthInPx)
-        }
+        let aspectRatio = max(originalWidth, originalHeight) / min(originalWidth, originalHeight)
+        return Int(widthInPx * aspectRatio)
     }
 }

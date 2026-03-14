@@ -73,7 +73,7 @@ struct PrimaryEditorialCard: View {
     @ViewBuilder
     func productView(_ product: FeedProduct) -> some View {
         if let imgUrl = product.imgUrl {
-            PhiaAsyncImage(url: imgUrl, displayWidth: 123, imageService: imageService)
+            PhiaAsyncImage(url: imgUrl, displayWidth: 175, imageService: imageService)
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 123, height: 175)
                 .clipShape(RoundedRectangle(cornerRadius: 6))

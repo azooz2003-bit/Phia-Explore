@@ -74,7 +74,7 @@ struct SecondaryEditorialCard: View {
     func productImage(for imgUrl: URL) -> some View {
         Color.clear
             .overlay {
-                PhiaAsyncImage(url: imgUrl, displayWidth: 40, imageService: imageService)
+                PhiaAsyncImage(url: imgUrl, displayWidth: 80, imageService: imageService)
                     .aspectRatio(contentMode: .fill)
             }
             .frame(width: 40)
