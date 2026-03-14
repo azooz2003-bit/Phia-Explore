@@ -37,7 +37,9 @@ struct PrimaryProductCard: View {
     }
 
     var body: some View {
-        GenericItemCard(title: product.itemName, titleLineLimit: 2, imageUrls: [product.imgUrl].compactMap(\.self), estimatedPrimaryImageHeight: Self.estimatedPrimaryImageHeight, imageService: imageService, isBookmarked: viewModel.isBookmarked, onBookmarkToggle: { viewModel.toggleBookmark() }) {
+        let imageUrls = [product.imgUrl].compactMap(\.self)
+
+        return GenericItemCard(title: product.itemName, titleLineLimit: 2, imageUrls: imageUrls, estimatedPrimaryImageHeight: Self.estimatedPrimaryImageHeight, imageService: imageService, isBookmarked: viewModel.isBookmarked, onBookmarkToggle: { viewModel.toggleBookmark() }) {
             HStack(spacing: 0) {
                 Text(product.brand.uppercased())
                     .lineLimit(1)

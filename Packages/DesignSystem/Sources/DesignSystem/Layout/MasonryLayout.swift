@@ -60,11 +60,15 @@ public struct MasonryLayout: Layout {
             let size = subview.sizeThatFits(ProposedViewSize(width: columnWidth, height: nil))
 
             let actualImgHeight = subview[PrimaryImageFrameHeightKey.self]
-            let estimatedImgHeight = subview[EstimatedImageHeightKey.self]
+            let name = subview[CardNameKey.self]
+
+            if actualImgHeight == nil {
+                print("No image height for \(name, default: "N/A")")
+            }
 
             let height: CGFloat = {
-                if let actualImgHeight, let estimatedImgHeight, estimatedImgHeight > 0 {
-                    size.height - estimatedImgHeight + actualImgHeight
+                if let imgHeight = actualImgHeight, imgHeight > 0 {
+                    size.height + imgHeight
                 } else {
                     size.height
                 }
@@ -73,6 +77,7 @@ public struct MasonryLayout: Layout {
             positions.append(CGPoint(x: x, y: y))
             sizes.append(CGSize(width: columnWidth, height: height))
             columnAssignments.append(shortest)
+
             canExpand.append(subview[CanExpandVerticallyKey.self])
 
             columnHeights[shortest] += height + spacing
@@ -85,7 +90,9 @@ public struct MasonryLayout: Layout {
     }
 
     private func equalizeColumns(positions: inout [CGPoint], sizes: inout [CGSize], columnAssignments: [Int], columnHeights: [CGFloat], maxHeight: CGFloat, canExpand: [Bool]) {
-        guard !positions.isEmpty else { return }
+        guard !positions.isEmpty else {
+            return
+        }
 
         for col in 0..<columns {
             let colHeight = columnHeights[col] - spacing
@@ -104,6 +111,7 @@ public struct MasonryLayout: Layout {
             }
 
             let sortedIndices = indices.sorted { positions[$0].y < positions[$1].y }
+
             var y: CGFloat = 0
             for i in sortedIndices {
                 positions[i].y = y

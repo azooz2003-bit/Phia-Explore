@@ -15,8 +15,9 @@ public struct PrimaryImageFrameHeightKey: LayoutValueKey, Sendable {
     nonisolated public static let defaultValue: CGFloat? = nil
 }
 
-public struct EstimatedImageHeightKey: LayoutValueKey, Sendable {
-    nonisolated public static let defaultValue: CGFloat? = nil
+/// For debugging
+public struct CardNameKey: LayoutValueKey, Sendable {
+    nonisolated public static let defaultValue: String = ""
 }
 
 public extension View {
@@ -28,7 +29,8 @@ public extension View {
         layoutValue(key: PrimaryImageFrameHeightKey.self, value: value)
     }
 
-    func estimatedImageHeight(_ value: CGFloat?) -> some View {
-        layoutValue(key: EstimatedImageHeightKey.self, value: value)
+    /// For debugging
+    func cardName(_ value: String) -> some View {
+        layoutValue(key: CardNameKey.self, value: value)
     }
 }

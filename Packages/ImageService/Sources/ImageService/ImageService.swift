@@ -83,4 +83,8 @@ public actor ImageService {
             throw error
         }
     }
+
+    public func clearCache() async {
+        await diskCache?.clearCache()
+    }
 }

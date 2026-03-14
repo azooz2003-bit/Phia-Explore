@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CryptoKit
 
 actor DiskImageCache {
     private let cacheDirectory: URL
@@ -58,11 +59,18 @@ actor DiskImageCache {
         return CGFloat(value)
     }
 
+    func clearCache() {
+        guard let contents = try? FileManager.default.contentsOfDirectory(at: cacheDirectory, includingPropertiesForKeys: nil) else { return }
+        for file in contents {
+            try? FileManager.default.removeItem(at: file)
+        }
+    }
+
+    /// Hashing is necessary to avoid large filenames, get by filename errors occur otherwise making image fetching fail for long urls
+    /// https://stackoverflow.com/a/59965839/17782408
+    /// https://www.hackingwithswift.com/example-code/cryptokit/how-to-calculate-the-sha-hash-of-a-string-or-data-instance#:~:text=If%20you%20want%20to%20calculate,joined()
     nonisolated private func cacheKey(for url: URL) -> String {
-        // encoding + "/" replacement needed, get by filename errors occur otherwise
-        Data(url.absoluteString.utf8)
-            .base64EncodedString()
-            .replacingOccurrences(of: "/", with: "_")
-            .replacingOccurrences(of: "+", with: "-")
+        let digest = SHA256.hash(data: Data(url.absoluteString.utf8))
+        return digest.map { String(format: "%02x", $0) }.joined()
     }
 }

@@ -72,12 +72,7 @@ public struct FeedGrid: View {
             ForEach(feedVM.gridChunks) { chunk in
                 MasonryLayout(columns: 2, spacing: 6) {
                     ForEach(chunk.items, id: \.id) { item in
-                        card(forItem: item, aspectRatio: chunk.aspectRatios[item.id])
-                            .onScrollVisibilityChange { isVisible in
-                                if isVisible, item.id == feedVM.lastItemID {
-                                    paginate()
-                                }
-                            }
+                        card(forItem: item, aspectRatio: chunk.aspectRatios[item.id], isLastItem: item.id == feedVM.lastItemID)
                     }
                 }
             }
@@ -105,7 +100,6 @@ public struct FeedGrid: View {
             }
         }
         .onAppear {
-            print("Page end reached.")
             paginate()
         }
     }
@@ -136,58 +130,47 @@ public struct FeedGrid: View {
     }
 
     @ViewBuilder
-    func card(forItem item: MasonryItem, aspectRatio: CGFloat?) -> some View {
+    func card(forItem item: MasonryItem, aspectRatio: CGFloat?, isLastItem: Bool) -> some View {
         let imageFrameHeight = calculateImageFrameHeight(for: item, aspectRatio: aspectRatio)
-        let estimatedImageHeight = getEstimatedImageHeight(for: item)
-
-        Button {
-            selectedItem = item
-        } label: {
-            switch item {
-            case .outfit(let variant):
-                switch variant {
-                case .primary(let outfit):
-                    PrimaryOutfitCard(outfit: outfit, imageService: imageService)
-                case .secondary(let outfit):
-                    SecondaryOutfitCard(outfit: outfit, imageService: imageService)
+        Group {
+            Button {
+                selectedItem = item
+            } label: {
+                switch item {
+                case .outfit(let variant):
+                    switch variant {
+                    case .primary(let outfit):
+                        PrimaryOutfitCard(outfit: outfit, imageService: imageService)
+                    case .secondary(let outfit):
+                        SecondaryOutfitCard(outfit: outfit, imageService: imageService)
+                    }
+                case .editorial(let variant):
+                    switch variant {
+                    case .primary(let editorial):
+                        PrimaryEditorialCard(editorial: editorial, imageService: imageService)
+                    case .secondary(let editorial):
+                        SecondaryEditorialCard(editorial: editorial, imageService: imageService)
+                    }
+                case .product(let variant):
+                    switch variant {
+                    case .primary(let product):
+                        PrimaryProductCard(product: product, imageService: imageService)
+                    }
                 }
-            case .editorial(let variant):
-                switch variant {
-                case .primary(let editorial):
-                    PrimaryEditorialCard(editorial: editorial, imageService: imageService)
-                case .secondary(let editorial):
-                    SecondaryEditorialCard(editorial: editorial, imageService: imageService)
-                }
-            case .product(let variant):
-                switch variant {
-                case .primary(let product):
-                    PrimaryProductCard(product: product, imageService: imageService)
+            }
+            .buttonStyle(.plain)
+            .onScrollVisibilityChange { isVisible in
+                if isVisible, isLastItem {
+                    paginate()
                 }
             }
         }
-        .buttonStyle(.plain)
         .canExpandVertically(item.hasExpandableImage)
         .primaryImageFrameHeight(imageFrameHeight)
-        .estimatedImageHeight(estimatedImageHeight)
+        .cardName(item.cardName)
         .matchedTransitionSource(id: item.id, in: namespace)
     }
 
-    func getEstimatedImageHeight(for item: MasonryItem) -> CGFloat? {
-        guard item.hasExpandableImage else { return nil }
-
-        switch item {
-        case .editorial(.primary):
-            return 178
-        case .editorial(.secondary):
-            return 241
-        case .outfit(.primary):
-            return 380
-        case .outfit(.secondary):
-            return 238
-        case .product(.primary):
-            return 270
-        }
-    }
 }
 
 #Preview {

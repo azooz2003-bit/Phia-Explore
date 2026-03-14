@@ -85,9 +85,14 @@ struct GenericItemCard<Subtitle: View>: View {
 
     @ViewBuilder
     func imageView(for imgUrl: URL) -> some View {
-        PhiaAsyncImage(url: imgUrl, estimatedHeight: estimatedPrimaryImageHeight, imageService: imageService)
-            .aspectRatio(contentMode: .fill)
+        Color.clear
+            .overlay {
+                PhiaAsyncImage(url: imgUrl, estimatedHeight: estimatedPrimaryImageHeight, imageService: imageService)
+                    .aspectRatio(contentMode: .fill)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
             .containerRelativeFrame(.horizontal)
+            .clipped()
             .clipShape(RoundedRectangle(cornerRadius: 6))
     }
 

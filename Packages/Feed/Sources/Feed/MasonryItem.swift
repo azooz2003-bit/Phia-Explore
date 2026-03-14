@@ -47,17 +47,39 @@ public enum MasonryItem {
         }
     }
 
+    public var cardName: String {
+        switch self {
+        case .outfit(let variant):
+            switch variant {
+            case .primary(let outfit), .secondary(let outfit):
+                outfit.name
+            }
+        case .editorial(let variant):
+            switch variant {
+            case .primary(let editorial), .secondary(let editorial):
+                editorial.title
+            }
+        case .product(let variant):
+            switch variant {
+            case .primary(let product):
+                product.itemName
+            }
+        }
+    }
+
     public var primaryImageURL: URL? {
         switch self {
         case .outfit(let variant):
             switch variant {
             case .primary(let outfit), .secondary(let outfit):
-                outfit.imgUrl
+                outfit.imgUrl ?? outfit.products?.first(where: { $0.imgUrl != nil })?.imgUrl
             }
         case .editorial(let variant):
             switch variant {
-            case .primary(let editorial), .secondary(let editorial):
+            case .primary(let editorial):
                 editorial.imgUrl
+            case .secondary(let editorial):
+                editorial.imgUrl ?? editorial.products?.first(where: { $0.imgUrl != nil })?.imgUrl
             }
         case .product(let variant):
             switch variant {
@@ -68,23 +90,7 @@ public enum MasonryItem {
     }
 
     public var hasExpandableImage: Bool {
-        switch self {
-        case .outfit(let variant):
-            switch variant {
-            case .primary(let outfit), .secondary(let outfit):
-                return outfit.imgUrl != nil || !(outfit.products?.compactMap(\.imgUrl).isEmpty ?? true)
-            }
-        case .editorial(let variant):
-            switch variant {
-            case .primary(let editorial), .secondary(let editorial):
-                return editorial.imgUrl != nil || !(editorial.products?.compactMap(\.imgUrl).isEmpty ?? true)
-            }
-        case .product(let variant):
-            switch variant {
-            case .primary(let product):
-                return product.imgUrl != nil
-            }
-        }
+        primaryImageURL != nil
     }
 
     init?(fromResponse item: FeedItem) {

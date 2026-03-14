@@ -60,7 +60,6 @@ struct SecondaryEditorialCard: View {
     func primaryImage(for imgUrl: URL?) -> some View {
         if let imgUrl {
             Color.clear
-                .frame(minHeight: Self.estimatedPrimaryImageHeight, maxHeight: .infinity)
                 .overlay {
                     PhiaAsyncImage(url: imgUrl, estimatedHeight: Self.estimatedPrimaryImageHeight, imageService: imageService)
                         .aspectRatio(contentMode: .fill)
@@ -73,9 +72,13 @@ struct SecondaryEditorialCard: View {
 
     @ViewBuilder
     func productImage(for imgUrl: URL) -> some View {
-        PhiaAsyncImage(url: imgUrl, displayWidth: 40, imageService: imageService)
-            .aspectRatio(contentMode: .fill)
+        Color.clear
+            .overlay {
+                PhiaAsyncImage(url: imgUrl, displayWidth: 40, imageService: imageService)
+                    .aspectRatio(contentMode: .fill)
+            }
             .frame(width: 40)
+            .clipped()
             .clipShape(RoundedRectangle(cornerRadius: 4))
     }
 

@@ -41,6 +41,10 @@ public class FeedViewModel {
         self.feedRepository = feedRepository
         self.imageService = imageService
         self.feedType = feedType
+
+        Task {
+            await imageService.clearCache()
+        }
     }
 
     func didReachPageEnd() async {
@@ -99,10 +103,16 @@ public class FeedViewModel {
     private func prefetchAspectRatios(for items: [MasonryItem]) async -> [String: CGFloat] {
         await withTaskGroup(of: (String, CGFloat?).self) { group in
             for item in items {
-                guard let url = item.primaryImageURL else { continue }
+                guard let url = item.primaryImageURL else {
+                    print("\(item.cardName): primaryImageURL is nil")
+                    continue
+                }
                 let id = item.id
                 group.addTask {
                     let ratio = await self.imageService.prefetchAspectRatio(for: url)
+                    if ratio == nil {
+                        print("\(await item.cardName): prefetch returned nil for \(url)")
+                    }
                     return (id, ratio)
                 }
             }

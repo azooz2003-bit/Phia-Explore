@@ -45,7 +45,6 @@ struct PrimaryEditorialCard: View {
     var primaryImage: some View {
         if let imgUrl = editorial.imgUrl {
             Color.clear
-                .frame(minHeight: Self.estimatedPrimaryImageHeight, maxHeight: .infinity)
                 .overlay {
                     PhiaAsyncImage(url: imgUrl, estimatedHeight: Self.estimatedPrimaryImageHeight, imageService: imageService)
                         .aspectRatio(contentMode: .fill)

@@ -34,6 +34,15 @@ public struct ExploreFeedResponse: Decodable, Sendable {
                     public let price: Double
                     public let productUrl: URL
                     public let imgUrl: URL?
+
+                    public init(id: String, itemName: String, brand: String, price: Double, productUrl: URL, imgUrl: URL?) {
+                        self.id = id
+                        self.itemName = itemName
+                        self.brand = brand
+                        self.price = price
+                        self.productUrl = productUrl
+                        self.imgUrl = imgUrl
+                    }
                 }
 
                 public struct AuthorOutput: Decodable, Sendable {
