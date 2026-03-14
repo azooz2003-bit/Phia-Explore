@@ -45,7 +45,7 @@ Then I decided to try the Layout protocol approach. If I was going to go with th
 
 The UIImage was stored in our custom async image's `@State` property via the `loaded(UIImage)` state, meaning it would persist throughout the view's life. I wanted to avoid that for views off the visible area, `onDisappear` wouldn't work since it's only triggered when a view was removed from the hierarchy - which doesn't happen in the `Layout` protocol implementation. Then I found `onScrollVisibilityChange`, allowing me to remove the image from the cell's state whenever its visibility changed. This would ensure that only images that need to be displayed are ever rendered and kept in memory.
 
-**Layout Protocol + Batched Lazy Loading*
+**Layout Protocol + Batched Lazy Loading**
 
 To combine the best of both worlds, each page of data that arrived was analyzed for the diff in height between the columns they'd display, then in the layout protocol's subview size computation we'd extend the height of each card in the shortest column such that that both columns are equal in size. Since we smartly binned the cards into the proper column initially, the column height difference was small, so when we extended the cards' heights, the effect on the UI was unnoticeable for the better.
 
