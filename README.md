@@ -1,5 +1,9 @@
 # Phia Onsite Demo
 
+## Testing the App
+- When opening the app, click on the Phia logo to see a secret menu pop up. If you want to stress test the scroll w/ much more data, you can choose a multiplier value (1x, 3x, 5x, 10x) to indicate how many times you want each fetched page of cards to be duplicated.
+- If you want to revisit how the app reacts when pulling images freshly, there's a `Clear Cache` action in the menu as well.
+
 ## Bonuses
 
 - All card variants were implemented.
